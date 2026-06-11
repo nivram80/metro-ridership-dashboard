@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Omaha Metro — Ridership Dashboard</title>
+  <meta name="description" content="Customizable dashboard of Omaha Metro fixed-route passenger trips by day, month, year, and route." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Mulish:wght@400;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="./styles/global.css" />
+
+  <!-- Lit (includes lit-html) vendored locally as a single bundled ES module,
+       so the site is fully self-contained — no CDN or build step required. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "lit": "./vendor/lit.js"
+      }
+    }
+  </script>
+
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <metro-dashboard data-src="./data/ridership.json"></metro-dashboard>
+
+  <noscript>
+    <p style="padding:2rem;font-family:sans-serif">
+      This dashboard requires JavaScript to render the interactive charts.
+    </p>
+  </noscript>
+</body>
+</html>

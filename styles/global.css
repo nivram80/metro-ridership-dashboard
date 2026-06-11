@@ -1,0 +1,84 @@
+/* ------------------------------------------------------------------ *
+ * Omaha Metro Ridership Dashboard — global design tokens & page shell
+ * Palette and type sampled from ometro.com (Metro blue / navy / gold,
+ * Mulish body + a condensed display face for headings).
+ * ------------------------------------------------------------------ */
+
+:root {
+  /* Brand palette (from ometro.com) */
+  --metro-blue:   #007DBA;   /* primary */
+  --metro-blue-d: #00659a;
+  --metro-navy:   #053955;   /* dark headers / ink */
+  --metro-gold:   #F2A900;
+  --metro-orange: #E87722;   /* ORBT */
+  --metro-sky:    #59CBE8;
+  --metro-teal:   #00B398;
+  --metro-green:  #7FBE39;
+  --metro-red:    #CF594A;
+
+  /* Neutrals */
+  --ink:    #053955;
+  --muted:  #5b6b75;
+  --muted-2:#8a97a0;
+  --line:   #dfe4e8;
+  --line-2: #eef1f3;
+  --bg:     #f4f7f9;
+  --card:   #ffffff;
+
+  /* A categorical sequence for routes/series, leading with brand colors */
+  --series-1: #007DBA;
+  --series-2: #E87722;
+  --series-3: #00B398;
+  --series-4: #F2A900;
+  --series-5: #053955;
+  --series-6: #59CBE8;
+  --series-7: #7FBE39;
+  --series-8: #CF594A;
+
+  /* Type */
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Mulish", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Shape & depth */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 1px 2px rgba(5, 57, 85, .06), 0 1px 3px rgba(5, 57, 85, .08);
+  --shadow-md: 0 6px 18px rgba(5, 57, 85, .10), 0 2px 6px rgba(5, 57, 85, .06);
+
+  --maxw: 1180px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  /* subtle brand wash at the very top */
+  background:
+    radial-gradient(1200px 320px at 50% -160px, rgba(0, 125, 186, .12), transparent 70%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: .01em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+a { color: var(--metro-blue); }
+
+/* Shared utility classes used inside light-DOM-ish slots if needed */
+.u-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}

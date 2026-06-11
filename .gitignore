@@ -1,0 +1,15 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Node (only used for optional tooling; the app itself needs no build)
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# Local server / scratch
+*.log
+.cache/
