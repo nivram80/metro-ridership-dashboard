@@ -1,10 +1,9 @@
 import { LitElement, html, css, nothing } from "lit";
-import { loadData, mergeData, aggregate, summarize } from "../data-store.js";
+import { loadData, aggregate, summarize } from "../data-store.js";
 
 import "./dashboard-controls.js";
 import "./stat-cards.js";
 import "./ridership-chart.js";
-import "./data-import.js";
 
 // ------------------------------------------------------------------
 // <metro-dashboard> — application root. Owns the dataset and the
@@ -69,10 +68,6 @@ export class MetroDashboard extends LitElement {
     this._state = next;
   }
 
-  _onImport(e) {
-    this._applyData(mergeData(this._data, e.detail));
-  }
-
   // --- derived ---------------------------------------------------
   get _agg() {
     return aggregate(this._data, this._state);
@@ -111,7 +106,6 @@ export class MetroDashboard extends LitElement {
             <span class="brand-divider" aria-hidden="true"></span>
             <span class="brand-sub">Ridership Dashboard</span>
           </div>
-          <data-import @data-imported=${this._onImport}></data-import>
         </div>
       </header>
 
