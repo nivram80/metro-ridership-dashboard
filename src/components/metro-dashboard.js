@@ -106,6 +106,15 @@ export class MetroDashboard extends LitElement {
             <span class="brand-divider" aria-hidden="true"></span>
             <span class="brand-sub">Ridership Dashboard</span>
           </div>
+          <a class="site-link" href="https://www.ometro.com/" target="_blank"
+             rel="noopener" aria-label="Back to ometro.com">
+            <span class="site-link-text">ometro.com</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>
         </div>
       </header>
 
@@ -229,9 +238,23 @@ export class MetroDashboard extends LitElement {
       font-family: var(--font-display, sans-serif); font-weight: 600;
       font-size: 14px; letter-spacing: .03em; color: rgba(255,255,255,.92); white-space: nowrap;
     }
+    /* "Back to ometro.com" ghost link */
+    .site-link {
+      display: inline-flex; align-items: center; gap: 7px; flex: none;
+      font-family: var(--font-body, sans-serif); font-weight: 700; font-size: 13.5px;
+      color: #fff; text-decoration: none; white-space: nowrap;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.38); border-radius: 9px;
+      padding: 8px 13px; transition: background .15s ease, border-color .15s ease;
+    }
+    .site-link:hover { background: rgba(255,255,255,.20); border-color: rgba(255,255,255,.65); }
+    .site-link svg { width: 14px; height: 14px; flex: none; }
+
     @media (max-width: 460px) {
       .brand-logo svg { width: 100px; }
       .brand-divider, .brand-sub { display: none; }
+      .site-link { padding: 8px 10px; }
+      .site-link-text { display: none; }   /* icon-only on very small screens */
     }
 
     /* Hero */
