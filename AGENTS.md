@@ -47,6 +47,31 @@ Source data comes from the Metro Board Packet ("Fixed-Route Passenger Trips
 2019–2026" chart). The figures are read visually from an image chart in the PDF
 (not extractable via `pdftotext`).
 
+### Estimated route dataset
+
+`data/route-estimates-2026.json` is also generated, but it is intentionally
+separate from the official system-wide dataset. It contains approximate
+route-level January-May 2026 totals estimated from the Amended June 2026 Board
+Packet "Ridership by Route" bar charts on pages 101-103.
+
+- **Never treat route estimates as official Metro data.** The UI marks these
+  values as estimated, uses `~` in KPIs/tooltips, and keeps the footer caveat.
+- Edit `scripts/build-route-estimates.mjs`, then run
+  `node scripts/build-route-estimates.mjs` to regenerate
+  `data/route-estimates-2026.json`.
+- Estimate records use `estimated: true` and include optional `weekdayTrips`,
+  `saturdayTrips`, and `sundayTrips` fields, while the chart uses the monthly
+  `trips` total.
+- The route estimates were scaled to the official monthly system totals and
+  rounded to the nearest 100 trips. This is good enough for prototype
+  exploration, not for final reporting.
+- If Metro provides exact route-level data later, import it as official route
+  records and either remove or clearly supersede this estimated dataset.
+
+`index.html` loads both datasets: official system totals via `data-src` and
+estimated route totals via `estimates-src`. `src/data-store.js` merges them while
+preserving estimate metadata.
+
 ## Roadmap
 
 - **Route-level series** (e.g. Route 11, ORBT) — the UI, data schema, and legend
@@ -62,7 +87,9 @@ Source data comes from the Metro Board Packet ("Fixed-Route Passenger Trips
 index.html                 import map + fonts + <metro-dashboard>
 styles/global.css          design tokens (brand palette, type)
 data/ridership.json        generated dataset (do not hand-edit)
+data/route-estimates-2026.json generated estimated route dataset (do not hand-edit)
 scripts/build-data.mjs     dataset generator (verifies annual totals)
+scripts/build-route-estimates.mjs route-estimate generator
 src/
   app.js                   entry point
   data-store.js            load / normalize / aggregate / summarize (no DOM)
