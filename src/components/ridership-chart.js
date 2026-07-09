@@ -29,7 +29,7 @@ export class RidershipChart extends LitElement {
     this.periods = [];
     this.series = [];
     this.chartType = "bar";
-    this.stacked = true;
+    this.stacked = false;
     this.granularity = "month";
     this._w = 800;
     this._hover = -1;
@@ -238,9 +238,15 @@ export class RidershipChart extends LitElement {
     const i = this._hover;
     const p = this.periods[i];
     const rows = this.series
-      .map((ser) => ({ name: ser.name, color: ser.color, value: ser.points[i]?.value || 0 }))
+      .map((ser) => ({
+        name: ser.name,
+        color: ser.color,
+        value: ser.points[i]?.value || 0,
+        estimated: Boolean(ser.estimated || ser.points[i]?.estimated),
+      }))
       .filter((r) => this.series.length === 1 || r.value > 0);
     const total = rows.reduce((s, r) => s + r.value, 0);
+    const estimated = rows.some((r) => r.estimated);
 
     const cx = this._xBandStart(i) + this._band / 2;
     const leftPct = (cx / this._w) * 100;
@@ -253,13 +259,13 @@ export class RidershipChart extends LitElement {
           <div class="tip-row">
             <span class="sw" style="background:${r.color}"></span>
             <span class="tip-name">${r.name}</span>
-            <span class="tip-val u-num">${fmtInt(r.value)}</span>
+            <span class="tip-val u-num">${r.estimated ? "~" : ""}${fmtInt(r.value)}</span>
           </div>`)}
         ${this.series.length > 1
           ? html`<div class="tip-row tip-total">
               <span class="sw" style="background:transparent"></span>
               <span class="tip-name">Total</span>
-              <span class="tip-val u-num">${fmtInt(total)}</span></div>`
+              <span class="tip-val u-num">${estimated ? "~" : ""}${fmtInt(total)}</span></div>`
           : nothing}
       </div>`;
   }

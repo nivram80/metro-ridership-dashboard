@@ -26,12 +26,17 @@ export async function loadData(url) {
 // Accepts the canonical { routes, records } object, fills in any missing
 // route metadata, and assigns colors to routes that don't declare one.
 export function normalize(raw) {
+  const datasetEstimated = Boolean(raw.estimated || raw.source?.estimated);
   const records = (raw.records || []).map((r) => ({
     routeId: String(r.routeId ?? "system"),
     year: Number(r.year),
     month: Number(r.month),
     day: r.day == null ? null : Number(r.day),
     trips: Number(r.trips) || 0,
+    estimated: Boolean(r.estimated ?? datasetEstimated),
+    weekdayTrips: r.weekdayTrips == null ? null : Number(r.weekdayTrips),
+    saturdayTrips: r.saturdayTrips == null ? null : Number(r.saturdayTrips),
+    sundayTrips: r.sundayTrips == null ? null : Number(r.sundayTrips),
   }));
 
   const declared = new Map((raw.routes || []).map((r) => [String(r.id), { ...r, id: String(r.id) }]));
@@ -51,15 +56,18 @@ export function normalize(raw) {
       id,
       name: r.name || id,
       color: r.color || SERIES_PALETTE[i % SERIES_PALETTE.length],
+      estimated: Boolean(r.estimated ?? datasetEstimated),
     };
   });
 
   return {
     title: raw.title || "Ridership",
     source: raw.source || null,
+    estimateSource: raw.estimateSource || null,
     routes,
     records,
     hasDaily: records.some((r) => r.day != null),
+    hasEstimates: routes.some((r) => r.estimated),
     years: [...new Set(records.map((r) => r.year))].sort((a, b) => a - b),
   };
 }
@@ -80,6 +88,7 @@ export function mergeData(base, incoming) {
   return normalize({
     title: base.title,
     source: base.source,
+    estimateSource: base.estimateSource || inc.source || inc.estimateSource || null,
     routes,
     records: [...map.values()],
   });
@@ -144,14 +153,18 @@ export function aggregate(data, opts) {
 
   // Collect the set of periods that actually have data.
   const periodMeta = new Map();        // key -> {key, sort, short, long}
-  // routeId -> (periodKey -> summed value)
+  // routeId -> (periodKey -> { value, estimated })
   const byRoute = new Map(routeIds.map((id) => [id, new Map()]));
 
   for (const rec of wanted) {
     const p = periodFor(rec, granularity);
     if (!periodMeta.has(p.key)) periodMeta.set(p.key, p);
     const bucket = byRoute.get(rec.routeId);
-    bucket.set(p.key, (bucket.get(p.key) || 0) + rec.trips);
+    const prev = bucket.get(p.key) || { value: 0, estimated: false };
+    bucket.set(p.key, {
+      value: prev.value + rec.trips,
+      estimated: prev.estimated || rec.estimated,
+    });
   }
 
   const periods = [...periodMeta.values()].sort((a, b) => a.sort - b.sort)
@@ -160,9 +173,12 @@ export function aggregate(data, opts) {
   const series = routeIds.map((id) => {
     const route = data.routes.find((r) => r.id === id) || { id, name: id, color: "#007DBA" };
     const bucket = byRoute.get(id) || new Map();
-    const points = periods.map((p) => ({ key: p.key, value: bucket.get(p.key) || 0 }));
+    const points = periods.map((p) => {
+      const pt = bucket.get(p.key);
+      return { key: p.key, value: pt?.value || 0, estimated: Boolean(pt?.estimated || route.estimated) };
+    });
     const total = points.reduce((s, pt) => s + pt.value, 0);
-    return { routeId: id, name: route.name, color: route.color, points, total };
+    return { routeId: id, name: route.name, color: route.color, estimated: Boolean(route.estimated), points, total };
   });
 
   const grandTotal = series.reduce((s, ser) => s + ser.total, 0);
@@ -198,6 +214,7 @@ export function summarize(agg, data, opts) {
     avgLabel: granularity === "year" ? "Avg / year" : granularity === "month" ? "Avg / month" : "Avg / day",
     peak,
     yoy,
+    estimated: series.some((ser) => ser.estimated),
   };
 }
 

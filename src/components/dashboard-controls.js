@@ -29,16 +29,35 @@ export class DashboardControls extends LitElement {
   }
 
   _toggleRoute(id) {
-    const set = new Set(this.state.routeIds);
-    if (set.has(id)) { if (set.size > 1) set.delete(id); }   // keep at least one
+    const route = this.routes.find((r) => r.id === id);
+    if (!route) return;
+
+    if (!route.estimated) {
+      this._emit({ routeIds: [id] });
+      return;
+    }
+
+    const set = new Set(
+      this.state.routeIds.filter((routeId) => this.routes.find((r) => r.id === routeId)?.estimated)
+    );
+    if (set.has(id)) set.delete(id);
     else set.add(id);
+
+    if (set.size === 0) {
+      const system = this.routes.find((r) => !r.estimated);
+      this._emit({ routeIds: system ? [system.id] : [id] });
+      return;
+    }
+
     // preserve route declaration order
     this._emit({ routeIds: this.routes.map((r) => r.id).filter((x) => set.has(x)) });
   }
 
   render() {
     const s = this.state;
-    const multi = this.routes.length > 1;
+    const multi = (s.routeIds || []).length > 1;
+    const officialRoutes = this.routes.filter((r) => !r.estimated);
+    const estimatedRoutes = this.routes.filter((r) => r.estimated);
     return html`
       <div class="bar">
         <div class="group">
@@ -63,10 +82,10 @@ export class DashboardControls extends LitElement {
           <div class="group">
             <span class="label">Bars</span>
             <div class="seg">
-              <button class=${"sbtn " + (s.stacked ? "on" : "")}
-                @click=${() => this._emit({ stacked: true })}>Stacked</button>
               <button class=${"sbtn " + (!s.stacked ? "on" : "")}
                 @click=${() => this._emit({ stacked: false })}>Grouped</button>
+              <button class=${"sbtn " + (s.stacked ? "on" : "")}
+                @click=${() => this._emit({ stacked: true })}>Stacked</button>
             </div>
           </div>` : nothing}
 
@@ -87,16 +106,34 @@ export class DashboardControls extends LitElement {
       </div>
 
       <div class="routes">
-        <span class="label">Routes</span>
+        ${this._routeGroup("System", officialRoutes)}
+        ${estimatedRoutes.length ? this._routeGroup("Estimated routes", estimatedRoutes, "Approximate values from packet bar charts") : nothing}
+      </div>
+    `;
+  }
+
+  _routeGroup(label, routes, note = "") {
+    if (!routes.length) return nothing;
+    const estimated = routes.some((r) => r.estimated);
+    return html`
+      <div class=${"route-group " + (estimated ? "estimate-group" : "system-group")}>
+        <div class="route-label">
+          <span class="label">${label}</span>
+          ${note ? html`<span class="route-note">${note}</span>` : nothing}
+        </div>
         <div class="chips">
-          ${this.routes.map((r) => {
+          ${routes.map((r) => {
             const on = this.state.routeIds.includes(r.id);
+            const aria = r.estimated ? `${r.name}, estimated route total` : r.name;
             return html`
-              <button class=${"chip " + (on ? "on" : "")}
+              <button class=${"chip " + (on ? "on" : "") + (r.estimated ? " estimated" : "")}
                 style=${on ? `--chip:${r.color}` : ""}
                 aria-pressed=${on}
+                aria-label=${aria}
+                title=${r.estimated ? "Estimated route total" : nothing}
                 @click=${() => this._toggleRoute(r.id)}>
-                <span class="dot" style="background:${r.color}"></span>${r.name}
+                <span class="dot" style="background:${r.color}"></span>
+                <span>${r.name}</span>
               </button>`;
           })}
         </div>
@@ -152,19 +189,24 @@ export class DashboardControls extends LitElement {
     .dash { color: var(--muted-2,#8a97a0); }
 
     .routes {
-      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-      margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line-2,#eef1f3);
+      display: grid; gap: 10px;
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line-2,#eef1f3);
     }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .route-group { display: grid; gap: 7px; min-width: 0; }
+    .system-group { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 12px; }
+    .estimate-group .route-label { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+    .route-label { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .route-note { font-size: 12px; color: var(--muted-2,#8a97a0); line-height: 1.35; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
     .chip {
-      display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-      font-family: var(--font-body, sans-serif); font-weight: 700; font-size: 13.5px;
+      display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+      font-family: var(--font-body, sans-serif); font-weight: 700; font-size: 13px;
       color: var(--muted, #5b6b75); background: #fff;
       border: 1.5px solid var(--line, #dfe4e8); border-radius: 999px;
-      padding: 7px 14px; transition: border-color .12s, color .12s, background .12s;
+      padding: 6px 10px; transition: border-color .12s, color .12s, background .12s;
     }
     .chip:hover { border-color: var(--muted-2,#8a97a0); }
-    .chip .dot { width: 10px; height: 10px; border-radius: 50%; opacity: .35; transition: opacity .12s; }
+    .chip .dot { width: 9px; height: 9px; border-radius: 50%; opacity: .35; transition: opacity .12s; }
     .chip.on {
       color: #fff; background: var(--chip, #007DBA); border-color: var(--chip, #007DBA);
     }
@@ -173,6 +215,7 @@ export class DashboardControls extends LitElement {
     @media (max-width: 640px) {
       .bar { gap: 12px 16px; }
       .sbtn { padding: 7px 11px; }
+      .system-group { grid-template-columns: 1fr; }
     }
   `;
 }

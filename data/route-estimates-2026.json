@@ -1,0 +1,1472 @@
+{
+  "title": "Omaha Metro — Estimated Route Passenger Trips",
+  "estimated": true,
+  "source": {
+    "name": "Metro (Omaha) Amended June 2026 Board Packet — Ridership by Route charts",
+    "url": "https://www.ometro.com/amended-june-2026-board-packet/",
+    "note": "Approximate route-level trips estimated from bar heights on pages 101-103; values rounded to the nearest 100.",
+    "asOf": "2026-06",
+    "pages": "101-103",
+    "method": "Bar-height estimate calibrated to each chart axis and scaled to monthly system totals."
+  },
+  "routes": [
+    {
+      "id": "orbt",
+      "name": "ORBT",
+      "color": "#E87722",
+      "estimated": true
+    },
+    {
+      "id": "3",
+      "name": "Route 3",
+      "color": "#59CBE8",
+      "estimated": true
+    },
+    {
+      "id": "4",
+      "name": "Route 4",
+      "color": "#F2A900",
+      "estimated": true
+    },
+    {
+      "id": "5",
+      "name": "Route 5",
+      "color": "#707070",
+      "estimated": true
+    },
+    {
+      "id": "8",
+      "name": "Route 8",
+      "color": "#053955",
+      "estimated": true
+    },
+    {
+      "id": "11",
+      "name": "Route 11",
+      "color": "#CF594A",
+      "estimated": true
+    },
+    {
+      "id": "13",
+      "name": "Route 13",
+      "color": "#7FBE39",
+      "estimated": true
+    },
+    {
+      "id": "14",
+      "name": "Route 14",
+      "color": "#00B398",
+      "estimated": true
+    },
+    {
+      "id": "15",
+      "name": "Route 15",
+      "color": "#053955",
+      "estimated": true
+    },
+    {
+      "id": "18",
+      "name": "Route 18",
+      "color": "#007DBA",
+      "estimated": true
+    },
+    {
+      "id": "24",
+      "name": "Route 24",
+      "color": "#00B398",
+      "estimated": true
+    },
+    {
+      "id": "26",
+      "name": "Route 26",
+      "color": "#707070",
+      "estimated": true
+    },
+    {
+      "id": "30",
+      "name": "Route 30",
+      "color": "#CF594A",
+      "estimated": true
+    },
+    {
+      "id": "35",
+      "name": "Route 35",
+      "color": "#F2A900",
+      "estimated": true
+    },
+    {
+      "id": "36",
+      "name": "Route 36",
+      "color": "#59CBE8",
+      "estimated": true
+    },
+    {
+      "id": "41",
+      "name": "Route 41",
+      "color": "#7FBE39",
+      "estimated": true
+    },
+    {
+      "id": "43",
+      "name": "Route 43",
+      "color": "#CF594A",
+      "estimated": true
+    },
+    {
+      "id": "55",
+      "name": "Route 55",
+      "color": "#707070",
+      "estimated": true
+    },
+    {
+      "id": "92",
+      "name": "Route 92",
+      "color": "#E87722",
+      "estimated": true
+    },
+    {
+      "id": "93",
+      "name": "Route 93",
+      "color": "#59CBE8",
+      "estimated": true
+    },
+    {
+      "id": "94",
+      "name": "Route 94",
+      "color": "#00B398",
+      "estimated": true
+    },
+    {
+      "id": "95",
+      "name": "Route 95",
+      "color": "#F2A900",
+      "estimated": true
+    },
+    {
+      "id": "97",
+      "name": "Route 97",
+      "color": "#053955",
+      "estimated": true
+    },
+    {
+      "id": "106",
+      "name": "Route 106",
+      "color": "#007DBA",
+      "estimated": true
+    },
+    {
+      "id": "120",
+      "name": "Route 120",
+      "color": "#7FBE39",
+      "estimated": true
+    },
+    {
+      "id": "200",
+      "name": "Route 200",
+      "color": "#CF594A",
+      "estimated": true
+    }
+  ],
+  "records": [
+    {
+      "routeId": "orbt",
+      "year": 2026,
+      "month": 1,
+      "trips": 46700,
+      "estimated": true,
+      "weekdayTrips": 38800,
+      "saturdayTrips": 5000,
+      "sundayTrips": 2900
+    },
+    {
+      "routeId": "3",
+      "year": 2026,
+      "month": 1,
+      "trips": 18700,
+      "estimated": true,
+      "weekdayTrips": 16000,
+      "saturdayTrips": 1600,
+      "sundayTrips": 1100
+    },
+    {
+      "routeId": "4",
+      "year": 2026,
+      "month": 1,
+      "trips": 27600,
+      "estimated": true,
+      "weekdayTrips": 23600,
+      "saturdayTrips": 2400,
+      "sundayTrips": 1600
+    },
+    {
+      "routeId": "5",
+      "year": 2026,
+      "month": 1,
+      "trips": 7300,
+      "estimated": true,
+      "weekdayTrips": 6600,
+      "saturdayTrips": 700,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "8",
+      "year": 2026,
+      "month": 1,
+      "trips": 4200,
+      "estimated": true,
+      "weekdayTrips": 3700,
+      "saturdayTrips": 500,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "11",
+      "year": 2026,
+      "month": 1,
+      "trips": 8600,
+      "estimated": true,
+      "weekdayTrips": 7700,
+      "saturdayTrips": 800,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "13",
+      "year": 2026,
+      "month": 1,
+      "trips": 13100,
+      "estimated": true,
+      "weekdayTrips": 11000,
+      "saturdayTrips": 1300,
+      "sundayTrips": 800
+    },
+    {
+      "routeId": "14",
+      "year": 2026,
+      "month": 1,
+      "trips": 6800,
+      "estimated": true,
+      "weekdayTrips": 6100,
+      "saturdayTrips": 700,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "15",
+      "year": 2026,
+      "month": 1,
+      "trips": 10600,
+      "estimated": true,
+      "weekdayTrips": 8500,
+      "saturdayTrips": 1300,
+      "sundayTrips": 800
+    },
+    {
+      "routeId": "18",
+      "year": 2026,
+      "month": 1,
+      "trips": 49800,
+      "estimated": true,
+      "weekdayTrips": 41600,
+      "saturdayTrips": 4900,
+      "sundayTrips": 3300
+    },
+    {
+      "routeId": "24",
+      "year": 2026,
+      "month": 1,
+      "trips": 30600,
+      "estimated": true,
+      "weekdayTrips": 26500,
+      "saturdayTrips": 2500,
+      "sundayTrips": 1600
+    },
+    {
+      "routeId": "26",
+      "year": 2026,
+      "month": 1,
+      "trips": 4300,
+      "estimated": true,
+      "weekdayTrips": 4100,
+      "saturdayTrips": 100,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "30",
+      "year": 2026,
+      "month": 1,
+      "trips": 12500,
+      "estimated": true,
+      "weekdayTrips": 10400,
+      "saturdayTrips": 1300,
+      "sundayTrips": 800
+    },
+    {
+      "routeId": "35",
+      "year": 2026,
+      "month": 1,
+      "trips": 6200,
+      "estimated": true,
+      "weekdayTrips": 5500,
+      "saturdayTrips": 400,
+      "sundayTrips": 300
+    },
+    {
+      "routeId": "36",
+      "year": 2026,
+      "month": 1,
+      "trips": 2600,
+      "estimated": true,
+      "weekdayTrips": 2400,
+      "saturdayTrips": 100,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "41",
+      "year": 2026,
+      "month": 1,
+      "trips": 4900,
+      "estimated": true,
+      "weekdayTrips": 4900,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "43",
+      "year": 2026,
+      "month": 1,
+      "trips": 6000,
+      "estimated": true,
+      "weekdayTrips": 5200,
+      "saturdayTrips": 800,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "55",
+      "year": 2026,
+      "month": 1,
+      "trips": 3900,
+      "estimated": true,
+      "weekdayTrips": 3600,
+      "saturdayTrips": 300,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "92",
+      "year": 2026,
+      "month": 1,
+      "trips": 0,
+      "estimated": true,
+      "weekdayTrips": 0,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "93",
+      "year": 2026,
+      "month": 1,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "94",
+      "year": 2026,
+      "month": 1,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "95",
+      "year": 2026,
+      "month": 1,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "97",
+      "year": 2026,
+      "month": 1,
+      "trips": 800,
+      "estimated": true,
+      "weekdayTrips": 800,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "106",
+      "year": 2026,
+      "month": 1,
+      "trips": 2100,
+      "estimated": true,
+      "weekdayTrips": 2100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "120",
+      "year": 2026,
+      "month": 1,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "200",
+      "year": 2026,
+      "month": 1,
+      "trips": 500,
+      "estimated": true,
+      "weekdayTrips": 500,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "orbt",
+      "year": 2026,
+      "month": 2,
+      "trips": 49800,
+      "estimated": true,
+      "weekdayTrips": 41000,
+      "saturdayTrips": 5000,
+      "sundayTrips": 3800
+    },
+    {
+      "routeId": "3",
+      "year": 2026,
+      "month": 2,
+      "trips": 19000,
+      "estimated": true,
+      "weekdayTrips": 16500,
+      "saturdayTrips": 1300,
+      "sundayTrips": 1200
+    },
+    {
+      "routeId": "4",
+      "year": 2026,
+      "month": 2,
+      "trips": 28700,
+      "estimated": true,
+      "weekdayTrips": 24500,
+      "saturdayTrips": 2400,
+      "sundayTrips": 1800
+    },
+    {
+      "routeId": "5",
+      "year": 2026,
+      "month": 2,
+      "trips": 6800,
+      "estimated": true,
+      "weekdayTrips": 6300,
+      "saturdayTrips": 500,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "8",
+      "year": 2026,
+      "month": 2,
+      "trips": 4200,
+      "estimated": true,
+      "weekdayTrips": 3800,
+      "saturdayTrips": 400,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "11",
+      "year": 2026,
+      "month": 2,
+      "trips": 8600,
+      "estimated": true,
+      "weekdayTrips": 7700,
+      "saturdayTrips": 800,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "13",
+      "year": 2026,
+      "month": 2,
+      "trips": 12900,
+      "estimated": true,
+      "weekdayTrips": 11100,
+      "saturdayTrips": 1100,
+      "sundayTrips": 700
+    },
+    {
+      "routeId": "14",
+      "year": 2026,
+      "month": 2,
+      "trips": 7000,
+      "estimated": true,
+      "weekdayTrips": 6300,
+      "saturdayTrips": 700,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "15",
+      "year": 2026,
+      "month": 2,
+      "trips": 12000,
+      "estimated": true,
+      "weekdayTrips": 10000,
+      "saturdayTrips": 1100,
+      "sundayTrips": 900
+    },
+    {
+      "routeId": "18",
+      "year": 2026,
+      "month": 2,
+      "trips": 51000,
+      "estimated": true,
+      "weekdayTrips": 43600,
+      "saturdayTrips": 4300,
+      "sundayTrips": 3100
+    },
+    {
+      "routeId": "24",
+      "year": 2026,
+      "month": 2,
+      "trips": 32100,
+      "estimated": true,
+      "weekdayTrips": 27500,
+      "saturdayTrips": 2800,
+      "sundayTrips": 1800
+    },
+    {
+      "routeId": "26",
+      "year": 2026,
+      "month": 2,
+      "trips": 4500,
+      "estimated": true,
+      "weekdayTrips": 4500,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "30",
+      "year": 2026,
+      "month": 2,
+      "trips": 13000,
+      "estimated": true,
+      "weekdayTrips": 10900,
+      "saturdayTrips": 1300,
+      "sundayTrips": 800
+    },
+    {
+      "routeId": "35",
+      "year": 2026,
+      "month": 2,
+      "trips": 6200,
+      "estimated": true,
+      "weekdayTrips": 5800,
+      "saturdayTrips": 300,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "36",
+      "year": 2026,
+      "month": 2,
+      "trips": 2300,
+      "estimated": true,
+      "weekdayTrips": 2300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "41",
+      "year": 2026,
+      "month": 2,
+      "trips": 5500,
+      "estimated": true,
+      "weekdayTrips": 5500,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "43",
+      "year": 2026,
+      "month": 2,
+      "trips": 6400,
+      "estimated": true,
+      "weekdayTrips": 5700,
+      "saturdayTrips": 700,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "55",
+      "year": 2026,
+      "month": 2,
+      "trips": 3900,
+      "estimated": true,
+      "weekdayTrips": 3600,
+      "saturdayTrips": 300,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "92",
+      "year": 2026,
+      "month": 2,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "93",
+      "year": 2026,
+      "month": 2,
+      "trips": 0,
+      "estimated": true,
+      "weekdayTrips": 0,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "94",
+      "year": 2026,
+      "month": 2,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "95",
+      "year": 2026,
+      "month": 2,
+      "trips": 0,
+      "estimated": true,
+      "weekdayTrips": 0,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "97",
+      "year": 2026,
+      "month": 2,
+      "trips": 700,
+      "estimated": true,
+      "weekdayTrips": 700,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "106",
+      "year": 2026,
+      "month": 2,
+      "trips": 1900,
+      "estimated": true,
+      "weekdayTrips": 1900,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "120",
+      "year": 2026,
+      "month": 2,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "200",
+      "year": 2026,
+      "month": 2,
+      "trips": 400,
+      "estimated": true,
+      "weekdayTrips": 400,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "orbt",
+      "year": 2026,
+      "month": 3,
+      "trips": 56800,
+      "estimated": true,
+      "weekdayTrips": 47000,
+      "saturdayTrips": 5400,
+      "sundayTrips": 4400
+    },
+    {
+      "routeId": "3",
+      "year": 2026,
+      "month": 3,
+      "trips": 19300,
+      "estimated": true,
+      "weekdayTrips": 16700,
+      "saturdayTrips": 1300,
+      "sundayTrips": 1300
+    },
+    {
+      "routeId": "4",
+      "year": 2026,
+      "month": 3,
+      "trips": 32100,
+      "estimated": true,
+      "weekdayTrips": 27300,
+      "saturdayTrips": 2600,
+      "sundayTrips": 2200
+    },
+    {
+      "routeId": "5",
+      "year": 2026,
+      "month": 3,
+      "trips": 6700,
+      "estimated": true,
+      "weekdayTrips": 6300,
+      "saturdayTrips": 400,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "8",
+      "year": 2026,
+      "month": 3,
+      "trips": 4500,
+      "estimated": true,
+      "weekdayTrips": 4100,
+      "saturdayTrips": 400,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "11",
+      "year": 2026,
+      "month": 3,
+      "trips": 10000,
+      "estimated": true,
+      "weekdayTrips": 8700,
+      "saturdayTrips": 900,
+      "sundayTrips": 400
+    },
+    {
+      "routeId": "13",
+      "year": 2026,
+      "month": 3,
+      "trips": 14700,
+      "estimated": true,
+      "weekdayTrips": 12200,
+      "saturdayTrips": 1500,
+      "sundayTrips": 1000
+    },
+    {
+      "routeId": "14",
+      "year": 2026,
+      "month": 3,
+      "trips": 7800,
+      "estimated": true,
+      "weekdayTrips": 7100,
+      "saturdayTrips": 700,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "15",
+      "year": 2026,
+      "month": 3,
+      "trips": 11800,
+      "estimated": true,
+      "weekdayTrips": 9800,
+      "saturdayTrips": 1000,
+      "sundayTrips": 1000
+    },
+    {
+      "routeId": "18",
+      "year": 2026,
+      "month": 3,
+      "trips": 57400,
+      "estimated": true,
+      "weekdayTrips": 48200,
+      "saturdayTrips": 5100,
+      "sundayTrips": 4100
+    },
+    {
+      "routeId": "24",
+      "year": 2026,
+      "month": 3,
+      "trips": 34700,
+      "estimated": true,
+      "weekdayTrips": 30000,
+      "saturdayTrips": 2600,
+      "sundayTrips": 2100
+    },
+    {
+      "routeId": "26",
+      "year": 2026,
+      "month": 3,
+      "trips": 5000,
+      "estimated": true,
+      "weekdayTrips": 4800,
+      "saturdayTrips": 100,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "30",
+      "year": 2026,
+      "month": 3,
+      "trips": 14800,
+      "estimated": true,
+      "weekdayTrips": 12000,
+      "saturdayTrips": 1500,
+      "sundayTrips": 1300
+    },
+    {
+      "routeId": "35",
+      "year": 2026,
+      "month": 3,
+      "trips": 6300,
+      "estimated": true,
+      "weekdayTrips": 5700,
+      "saturdayTrips": 300,
+      "sundayTrips": 300
+    },
+    {
+      "routeId": "36",
+      "year": 2026,
+      "month": 3,
+      "trips": 2700,
+      "estimated": true,
+      "weekdayTrips": 2600,
+      "saturdayTrips": 100,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "41",
+      "year": 2026,
+      "month": 3,
+      "trips": 6200,
+      "estimated": true,
+      "weekdayTrips": 6200,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "43",
+      "year": 2026,
+      "month": 3,
+      "trips": 7400,
+      "estimated": true,
+      "weekdayTrips": 6500,
+      "saturdayTrips": 900,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "55",
+      "year": 2026,
+      "month": 3,
+      "trips": 4300,
+      "estimated": true,
+      "weekdayTrips": 4000,
+      "saturdayTrips": 300,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "92",
+      "year": 2026,
+      "month": 3,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "93",
+      "year": 2026,
+      "month": 3,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "94",
+      "year": 2026,
+      "month": 3,
+      "trips": 400,
+      "estimated": true,
+      "weekdayTrips": 400,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "95",
+      "year": 2026,
+      "month": 3,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "97",
+      "year": 2026,
+      "month": 3,
+      "trips": 700,
+      "estimated": true,
+      "weekdayTrips": 700,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "106",
+      "year": 2026,
+      "month": 3,
+      "trips": 2200,
+      "estimated": true,
+      "weekdayTrips": 2200,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "120",
+      "year": 2026,
+      "month": 3,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "200",
+      "year": 2026,
+      "month": 3,
+      "trips": 600,
+      "estimated": true,
+      "weekdayTrips": 600,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "orbt",
+      "year": 2026,
+      "month": 4,
+      "trips": 59600,
+      "estimated": true,
+      "weekdayTrips": 49700,
+      "saturdayTrips": 5600,
+      "sundayTrips": 4300
+    },
+    {
+      "routeId": "3",
+      "year": 2026,
+      "month": 4,
+      "trips": 19600,
+      "estimated": true,
+      "weekdayTrips": 17200,
+      "saturdayTrips": 1300,
+      "sundayTrips": 1100
+    },
+    {
+      "routeId": "4",
+      "year": 2026,
+      "month": 4,
+      "trips": 33900,
+      "estimated": true,
+      "weekdayTrips": 29500,
+      "saturdayTrips": 2400,
+      "sundayTrips": 2000
+    },
+    {
+      "routeId": "5",
+      "year": 2026,
+      "month": 4,
+      "trips": 7300,
+      "estimated": true,
+      "weekdayTrips": 6900,
+      "saturdayTrips": 400,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "8",
+      "year": 2026,
+      "month": 4,
+      "trips": 4400,
+      "estimated": true,
+      "weekdayTrips": 4200,
+      "saturdayTrips": 200,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "11",
+      "year": 2026,
+      "month": 4,
+      "trips": 10200,
+      "estimated": true,
+      "weekdayTrips": 8900,
+      "saturdayTrips": 900,
+      "sundayTrips": 400
+    },
+    {
+      "routeId": "13",
+      "year": 2026,
+      "month": 4,
+      "trips": 15200,
+      "estimated": true,
+      "weekdayTrips": 13400,
+      "saturdayTrips": 1100,
+      "sundayTrips": 700
+    },
+    {
+      "routeId": "14",
+      "year": 2026,
+      "month": 4,
+      "trips": 8500,
+      "estimated": true,
+      "weekdayTrips": 8000,
+      "saturdayTrips": 500,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "15",
+      "year": 2026,
+      "month": 4,
+      "trips": 12500,
+      "estimated": true,
+      "weekdayTrips": 10500,
+      "saturdayTrips": 1100,
+      "sundayTrips": 900
+    },
+    {
+      "routeId": "18",
+      "year": 2026,
+      "month": 4,
+      "trips": 59600,
+      "estimated": true,
+      "weekdayTrips": 50800,
+      "saturdayTrips": 5200,
+      "sundayTrips": 3600
+    },
+    {
+      "routeId": "24",
+      "year": 2026,
+      "month": 4,
+      "trips": 36400,
+      "estimated": true,
+      "weekdayTrips": 31500,
+      "saturdayTrips": 3100,
+      "sundayTrips": 1800
+    },
+    {
+      "routeId": "26",
+      "year": 2026,
+      "month": 4,
+      "trips": 5100,
+      "estimated": true,
+      "weekdayTrips": 5100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "30",
+      "year": 2026,
+      "month": 4,
+      "trips": 15200,
+      "estimated": true,
+      "weekdayTrips": 12700,
+      "saturdayTrips": 1400,
+      "sundayTrips": 1100
+    },
+    {
+      "routeId": "35",
+      "year": 2026,
+      "month": 4,
+      "trips": 6400,
+      "estimated": true,
+      "weekdayTrips": 6000,
+      "saturdayTrips": 200,
+      "sundayTrips": 200
+    },
+    {
+      "routeId": "36",
+      "year": 2026,
+      "month": 4,
+      "trips": 2200,
+      "estimated": true,
+      "weekdayTrips": 2200,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "41",
+      "year": 2026,
+      "month": 4,
+      "trips": 6000,
+      "estimated": true,
+      "weekdayTrips": 6000,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "43",
+      "year": 2026,
+      "month": 4,
+      "trips": 7000,
+      "estimated": true,
+      "weekdayTrips": 6300,
+      "saturdayTrips": 700,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "55",
+      "year": 2026,
+      "month": 4,
+      "trips": 4200,
+      "estimated": true,
+      "weekdayTrips": 4000,
+      "saturdayTrips": 200,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "92",
+      "year": 2026,
+      "month": 4,
+      "trips": 0,
+      "estimated": true,
+      "weekdayTrips": 0,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "93",
+      "year": 2026,
+      "month": 4,
+      "trips": 0,
+      "estimated": true,
+      "weekdayTrips": 0,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "94",
+      "year": 2026,
+      "month": 4,
+      "trips": 200,
+      "estimated": true,
+      "weekdayTrips": 200,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "95",
+      "year": 2026,
+      "month": 4,
+      "trips": 0,
+      "estimated": true,
+      "weekdayTrips": 0,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "97",
+      "year": 2026,
+      "month": 4,
+      "trips": 500,
+      "estimated": true,
+      "weekdayTrips": 500,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "106",
+      "year": 2026,
+      "month": 4,
+      "trips": 2200,
+      "estimated": true,
+      "weekdayTrips": 2200,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "120",
+      "year": 2026,
+      "month": 4,
+      "trips": 0,
+      "estimated": true,
+      "weekdayTrips": 0,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "200",
+      "year": 2026,
+      "month": 4,
+      "trips": 200,
+      "estimated": true,
+      "weekdayTrips": 200,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "orbt",
+      "year": 2026,
+      "month": 5,
+      "trips": 58100,
+      "estimated": true,
+      "weekdayTrips": 44900,
+      "saturdayTrips": 7800,
+      "sundayTrips": 5400
+    },
+    {
+      "routeId": "3",
+      "year": 2026,
+      "month": 5,
+      "trips": 20400,
+      "estimated": true,
+      "weekdayTrips": 16700,
+      "saturdayTrips": 2100,
+      "sundayTrips": 1600
+    },
+    {
+      "routeId": "4",
+      "year": 2026,
+      "month": 5,
+      "trips": 34600,
+      "estimated": true,
+      "weekdayTrips": 28300,
+      "saturdayTrips": 3500,
+      "sundayTrips": 2800
+    },
+    {
+      "routeId": "5",
+      "year": 2026,
+      "month": 5,
+      "trips": 7500,
+      "estimated": true,
+      "weekdayTrips": 6600,
+      "saturdayTrips": 900,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "8",
+      "year": 2026,
+      "month": 5,
+      "trips": 4700,
+      "estimated": true,
+      "weekdayTrips": 4100,
+      "saturdayTrips": 600,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "11",
+      "year": 2026,
+      "month": 5,
+      "trips": 11600,
+      "estimated": true,
+      "weekdayTrips": 8900,
+      "saturdayTrips": 1500,
+      "sundayTrips": 1200
+    },
+    {
+      "routeId": "13",
+      "year": 2026,
+      "month": 5,
+      "trips": 16500,
+      "estimated": true,
+      "weekdayTrips": 12900,
+      "saturdayTrips": 2100,
+      "sundayTrips": 1500
+    },
+    {
+      "routeId": "14",
+      "year": 2026,
+      "month": 5,
+      "trips": 8500,
+      "estimated": true,
+      "weekdayTrips": 7500,
+      "saturdayTrips": 1000,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "15",
+      "year": 2026,
+      "month": 5,
+      "trips": 12800,
+      "estimated": true,
+      "weekdayTrips": 9700,
+      "saturdayTrips": 1800,
+      "sundayTrips": 1300
+    },
+    {
+      "routeId": "18",
+      "year": 2026,
+      "month": 5,
+      "trips": 61800,
+      "estimated": true,
+      "weekdayTrips": 48300,
+      "saturdayTrips": 8100,
+      "sundayTrips": 5400
+    },
+    {
+      "routeId": "24",
+      "year": 2026,
+      "month": 5,
+      "trips": 34600,
+      "estimated": true,
+      "weekdayTrips": 27600,
+      "saturdayTrips": 4100,
+      "sundayTrips": 2900
+    },
+    {
+      "routeId": "26",
+      "year": 2026,
+      "month": 5,
+      "trips": 4500,
+      "estimated": true,
+      "weekdayTrips": 4100,
+      "saturdayTrips": 300,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "30",
+      "year": 2026,
+      "month": 5,
+      "trips": 15700,
+      "estimated": true,
+      "weekdayTrips": 12300,
+      "saturdayTrips": 1900,
+      "sundayTrips": 1500
+    },
+    {
+      "routeId": "35",
+      "year": 2026,
+      "month": 5,
+      "trips": 6300,
+      "estimated": true,
+      "weekdayTrips": 5400,
+      "saturdayTrips": 600,
+      "sundayTrips": 300
+    },
+    {
+      "routeId": "36",
+      "year": 2026,
+      "month": 5,
+      "trips": 2400,
+      "estimated": true,
+      "weekdayTrips": 2200,
+      "saturdayTrips": 100,
+      "sundayTrips": 100
+    },
+    {
+      "routeId": "41",
+      "year": 2026,
+      "month": 5,
+      "trips": 6000,
+      "estimated": true,
+      "weekdayTrips": 6000,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "43",
+      "year": 2026,
+      "month": 5,
+      "trips": 7300,
+      "estimated": true,
+      "weekdayTrips": 6300,
+      "saturdayTrips": 1000,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "55",
+      "year": 2026,
+      "month": 5,
+      "trips": 4400,
+      "estimated": true,
+      "weekdayTrips": 4000,
+      "saturdayTrips": 400,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "92",
+      "year": 2026,
+      "month": 5,
+      "trips": 400,
+      "estimated": true,
+      "weekdayTrips": 400,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "93",
+      "year": 2026,
+      "month": 5,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "94",
+      "year": 2026,
+      "month": 5,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "95",
+      "year": 2026,
+      "month": 5,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "97",
+      "year": 2026,
+      "month": 5,
+      "trips": 600,
+      "estimated": true,
+      "weekdayTrips": 600,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "106",
+      "year": 2026,
+      "month": 5,
+      "trips": 1900,
+      "estimated": true,
+      "weekdayTrips": 1900,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "120",
+      "year": 2026,
+      "month": 5,
+      "trips": 100,
+      "estimated": true,
+      "weekdayTrips": 100,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "200",
+      "year": 2026,
+      "month": 5,
+      "trips": 400,
+      "estimated": true,
+      "weekdayTrips": 400,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    }
+  ]
+}

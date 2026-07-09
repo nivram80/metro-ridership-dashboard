@@ -1,5 +1,5 @@
 import { LitElement, html, css, nothing } from "lit";
-import { loadData, aggregate, summarize } from "../data-store.js";
+import { loadData, mergeData, aggregate, summarize } from "../data-store.js";
 
 import "./dashboard-controls.js";
 import "./stat-cards.js";
@@ -13,6 +13,7 @@ import "./ridership-chart.js";
 export class MetroDashboard extends LitElement {
   static properties = {
     dataSrc: { attribute: "data-src" },
+    estimatesSrc: { attribute: "estimates-src" },
     _data: { state: true },
     _state: { state: true },
     _error: { state: true },
@@ -21,12 +22,13 @@ export class MetroDashboard extends LitElement {
   constructor() {
     super();
     this.dataSrc = "./data/ridership.json";
+    this.estimatesSrc = "./data/route-estimates-2026.json";
     this._data = null;
     this._error = null;
     this._state = {
       granularity: "month",
       chartType: "bar",
-      stacked: true,
+      stacked: false,
       routeIds: [],
       fromYear: null,
       toYear: null,
@@ -36,7 +38,14 @@ export class MetroDashboard extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     try {
-      const data = await loadData(this.dataSrc);
+      let data = await loadData(this.dataSrc);
+      if (this.estimatesSrc) {
+        try {
+          data = mergeData(data, await loadData(this.estimatesSrc));
+        } catch (err) {
+          console.warn(`Could not load estimated route data: ${err.message}`);
+        }
+      }
       this._applyData(data);
     } catch (err) {
       this._error = err.message;
@@ -61,11 +70,35 @@ export class MetroDashboard extends LitElement {
     let patch = { ...e.detail.patch };
     // keep year range coherent
     const next = { ...this._state, ...patch };
+    if ("routeIds" in patch && this._data) {
+      const selected = patch.routeIds
+        .map((id) => this._data.routes.find((route) => route.id === id))
+        .filter(Boolean);
+      const wasEstimated = this._state.routeIds.some((id) => this._data.routes.find((route) => route.id === id)?.estimated);
+      const isEstimated = selected.length > 0 && selected.every((route) => route.estimated);
+
+      if (isEstimated) {
+        const years = this._yearsForRoutes(patch.routeIds);
+        if (years.length) {
+          next.fromYear = years[0];
+          next.toYear = years.at(-1);
+        }
+      } else if (wasEstimated) {
+        next.fromYear = this._data.years[0];
+        next.toYear = this._data.years.at(-1);
+      }
+    }
     if (next.fromYear > next.toYear) {
       if ("fromYear" in patch) next.toYear = next.fromYear;
       else next.fromYear = next.toYear;
     }
     this._state = next;
+  }
+
+  _yearsForRoutes(routeIds) {
+    const ids = new Set(routeIds);
+    return [...new Set(this._data.records.filter((rec) => ids.has(rec.routeId)).map((rec) => rec.year))]
+      .sort((a, b) => a - b);
   }
 
   // --- derived ---------------------------------------------------
@@ -149,7 +182,10 @@ export class MetroDashboard extends LitElement {
               <div class="legend">
                 ${this._state.routeIds.map((id) => {
                   const r = this._data.routes.find((x) => x.id === id);
-                  return html`<span class="lg"><span class="lg-dot" style="background:${r.color}"></span>${r.name}</span>`;
+                  return html`<span class="lg">
+                    <span class="lg-dot" style="background:${r.color}"></span>${r.name}
+                    ${r.estimated ? html`<span class="lg-est">est.</span>` : nothing}
+                  </span>`;
                 })}
               </div>` : nothing}
           </div>
@@ -158,7 +194,7 @@ export class MetroDashboard extends LitElement {
             .periods=${agg.periods}
             .series=${agg.series}
             chartType=${this._state.chartType}
-            ?stacked=${this._state.stacked}
+            .stacked=${this._state.stacked}
             granularity=${this._state.granularity}>
           </ridership-chart>
         </section>
@@ -172,30 +208,46 @@ export class MetroDashboard extends LitElement {
             ${this._data.source?.asOf ? html`Data as of ${this._data.source.asOf}.` : nothing}
           </p>
           <p class="foot-note">
-            System-wide fixed-route totals are read from the monthly Board Packet ridership chart.
-            Route-level figures appear here once imported.
+            System-wide fixed-route totals are official monthly Board Packet figures.
           </p>
+          ${this._data.estimateSource ? html`
+            <p class="foot-note">
+              Estimated route figures are rounded to the nearest 100 from bar heights on pages 101-103 of
+              <a href=${this._data.estimateSource.url} target="_blank" rel="noopener">${this._data.estimateSource.name}</a>.
+            </p>` : nothing}
         </footer>
       </main>
     `;
+  }
+
+  _selectedRoutes() {
+    return this._state.routeIds
+      .map((id) => this._data.routes.find((route) => route.id === id))
+      .filter(Boolean);
+  }
+
+  _hasEstimatedSelection() {
+    return this._selectedRoutes().some((route) => route.estimated);
   }
 
   _chartTitle() {
     const g = this._state.granularity;
     const n = this._state.routeIds.length;
     const noun = g === "year" ? "Annual" : g === "month" ? "Monthly" : "Daily";
+    const phrase = this._hasEstimatedSelection() ? `Estimated ${noun.toLowerCase()}` : noun;
     if (n === 1) {
       const r = this._data.routes.find((x) => x.id === this._state.routeIds[0]);
-      return `${noun} trips — ${r?.name ?? ""}`;
+      return `${phrase} trips — ${r?.name ?? ""}`;
     }
-    return `${noun} trips — ${n} routes`;
+    return `${phrase} trips — ${n} routes`;
   }
 
   _chartMeta(agg) {
     const c = agg.periods.length;
     if (!c) return "No data for this selection";
     const unit = this._state.granularity === "year" ? "year" : this._state.granularity === "month" ? "month" : "day";
-    return `${c} ${unit}${c === 1 ? "" : "s"} · ${this._rangeLabel()}`;
+    const estimate = this._hasEstimatedSelection() ? " · estimated route totals" : "";
+    return `${c} ${unit}${c === 1 ? "" : "s"} · ${this._rangeLabel()}${estimate}`;
   }
 
   _renderLoading() {
@@ -250,7 +302,7 @@ export class MetroDashboard extends LitElement {
     .site-link:hover { background: rgba(255,255,255,.20); border-color: rgba(255,255,255,.65); }
     .site-link svg { width: 14px; height: 14px; flex: none; }
 
-    @media (max-width: 460px) {
+    @media (max-width: 640px) {
       .brand-logo svg { width: 100px; }
       .brand-divider, .brand-sub { display: none; }
       .site-link { padding: 8px 10px; }
@@ -280,6 +332,11 @@ export class MetroDashboard extends LitElement {
     .legend { display: flex; flex-wrap: wrap; gap: 12px 16px; }
     .lg { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--muted,#5b6b75); }
     .lg-dot { width: 11px; height: 11px; border-radius: 3px; }
+    .lg-est {
+      font-size: 10.5px; line-height: 1; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--muted-2,#8a97a0); border: 1px solid var(--line,#dfe4e8);
+      border-radius: 999px; padding: 3px 5px;
+    }
 
     /* Footer */
     .foot { margin: 22px 0 48px; color: var(--muted, #5b6b75); font-size: 13px; }
@@ -299,6 +356,7 @@ export class MetroDashboard extends LitElement {
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 560px) {
+      .wrap { padding: 0 16px; }
       .panel { padding: 16px; }
     }
   `;

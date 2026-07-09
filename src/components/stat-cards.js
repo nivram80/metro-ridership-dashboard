@@ -16,12 +16,13 @@ export class StatCards extends LitElement {
     if (!s) return nothing;
     const yoy = s.yoy;
     const up = yoy && yoy.pct >= 0;
+    const approx = s.estimated ? "~" : "";
 
     return html`
       <div class="grid">
-        ${this._card("Total passenger trips", fmtInt(s.grandTotal), this.rangeLabel, "accent")}
-        ${this._card(s.avgLabel, fmtInt(s.avg), `${s.periodCount} period${s.periodCount === 1 ? "" : "s"}`)}
-        ${this._card("Busiest period", s.peak ? fmtInt(s.peak.value) : "—", s.peak ? s.peak.long : "")}
+        ${this._card(s.estimated ? "Estimated passenger trips" : "Total passenger trips", `${approx}${fmtInt(s.grandTotal)}`, this.rangeLabel, "accent")}
+        ${this._card(s.avgLabel, `${approx}${fmtInt(s.avg)}`, `${s.periodCount} period${s.periodCount === 1 ? "" : "s"}`)}
+        ${this._card("Busiest period", s.peak ? `${approx}${fmtInt(s.peak.value)}` : "—", s.peak ? s.peak.long : "")}
         ${yoy
           ? this._card(
               "Year over year",
@@ -76,7 +77,7 @@ export class StatCards extends LitElement {
     .card.accent .yoy { color: #fff; }
 
     @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 460px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
   `;
 }
 
