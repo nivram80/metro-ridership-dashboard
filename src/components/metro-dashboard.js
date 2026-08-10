@@ -212,7 +212,7 @@ export class MetroDashboard extends LitElement {
           </p>
           ${this._data.estimateSource ? html`
             <p class="foot-note">
-              Estimated route figures are rounded to the nearest 100 from bar heights on pages 101-103 of
+              Estimated route figures are rounded to the nearest 100 from bar heights on ${this._data.estimateSource.pages || "the cited pages"} of
               <a href=${this._data.estimateSource.url} target="_blank" rel="noopener">${this._data.estimateSource.name}</a>.
             </p>` : nothing}
         </footer>

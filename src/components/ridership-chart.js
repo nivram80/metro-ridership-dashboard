@@ -218,13 +218,22 @@ export class RidershipChart extends LitElement {
   _renderXAxis() {
     const maxLabels = Math.max(2, Math.floor(this._innerW / (this._rotate ? 38 : 64)));
     const step = Math.ceil(this.periods.length / maxLabels);
+    const lastIndex = this.periods.length - 1;
+    const labelCount = Math.min(
+      this.periods.length,
+      step === 1 ? this.periods.length : Math.ceil(lastIndex / step) + 1,
+    );
+    const labelIndices = new Set(
+      Array.from({ length: labelCount }, (_, slot) =>
+        labelCount === 1 ? 0 : Math.round((slot * lastIndex) / (labelCount - 1))),
+    );
     const y = this._M.top + this._innerH + (this._rotate ? 14 : 20);
     const baseY = this._M.top + this._innerH;
     const x0 = this._M.left, x1 = this._w - this._M.right;
     return svg`
       <line class="axis" x1=${x0} x2=${x1} y1=${baseY} y2=${baseY}></line>
       ${this.periods.map((p, i) => {
-        if (i % step !== 0 && i !== this.periods.length - 1) return nothing;
+        if (!labelIndices.has(i)) return nothing;
         const cx = this._xBandStart(i) + this._band / 2;
         return this._rotate
           ? svg`<text class="xtick" x=${cx} y=${y} text-anchor="end"
