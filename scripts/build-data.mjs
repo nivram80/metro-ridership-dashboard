@@ -54,10 +54,11 @@ for (const [year, months] of Object.entries(MONTHLY)) {
 const data = {
   title: "Omaha Metro — Fixed-Route Passenger Trips",
   source: {
-    name: "Metro (Omaha) Board Packet — Fixed-Route Passenger Trips",
+    name: "Metro July 2026 Updated Board Packet",
     url: "https://www.ometro.com/july-2026-board-packet-v3-7-21-2026/",
     note: "Monthly system-wide fixed-route trips read from the Board Packet ridership chart.",
-    asOf: "2026-07",
+    asOf: "2026-06",
+    dataThrough: "June 2026",
   },
   // Add route-level series here when the Board provides them, e.g.
   //   { "id": "11", "name": "Route 11", "color": "#00B398" }

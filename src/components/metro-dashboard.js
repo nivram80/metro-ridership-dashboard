@@ -205,14 +205,11 @@ export class MetroDashboard extends LitElement {
             ${this._data.source?.url
               ? html`<a href=${this._data.source.url} target="_blank" rel="noopener">${this._data.source?.name || "Metro Board Packet"}</a>`
               : (this._data.source?.name || "Metro Board Packet")}.
-            ${this._data.source?.asOf ? html`Data as of ${this._data.source.asOf}.` : nothing}
-          </p>
-          <p class="foot-note">
-            System-wide fixed-route totals are official monthly Board Packet figures.
+            Official system-wide fixed-route figures through ${this._data.source?.dataThrough || this._data.source?.asOf || "the latest reported month"}.
           </p>
           ${this._data.estimateSource ? html`
             <p class="foot-note">
-              Estimated route figures are rounded to the nearest 100 from bar heights on ${this._data.estimateSource.pages || "the cited pages"} of
+              Route-level figures are estimates—not official Metro route totals—and are rounded to the nearest 100 from bar heights on ${this._data.estimateSource.pages || "the cited pages"} of
               <a href=${this._data.estimateSource.url} target="_blank" rel="noopener">${this._data.estimateSource.name}</a>.
             </p>` : nothing}
         </footer>
