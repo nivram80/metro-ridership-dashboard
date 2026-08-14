@@ -136,7 +136,12 @@ export class DashboardControls extends LitElement {
                 @click=${() => this._toggleRoute(r.id)}>
                 <span class=${on ? "state-icon selected" : "state-icon"}
                   style=${on ? "" : `background:${r.color}`}
-                  aria-hidden="true">${on ? "✓" : ""}</span>
+                  aria-hidden="true">${on
+                    ? html`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.6 6.4 4.9 8.6 9.4 3.4" />
+                      </svg>`
+                    : nothing}</span>
                 <span>${r.name}</span>
               </button>`;
           })}
@@ -216,8 +221,13 @@ export class DashboardControls extends LitElement {
     .state-icon {
       display: inline-grid; place-items: center; width: 12px; height: 12px; flex: none;
       border: 1px solid var(--ink, #053955); border-radius: 50%; opacity: .75;
-      color: #fff; font-size: 9px; line-height: 1;
+      color: #fff;
     }
+    /* The check is inline SVG rather than a "✓" glyph on purpose: Mulish has no
+       U+2713, so the glyph came from a fallback font while the line box was sized
+       from Mulish's metrics — centring the line box left the mark 2.1px low. An
+       SVG box centres geometrically, independent of font metrics. */
+    .state-icon svg { display: block; width: 9px; height: 9px; }
     .state-icon.selected { background: var(--ink, #053955); opacity: 1; }
     .chip.on {
       color: var(--ink, #053955); background: #f4f7f9; border-color: var(--ink, #053955);
