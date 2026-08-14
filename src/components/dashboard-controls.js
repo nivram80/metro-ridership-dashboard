@@ -139,7 +139,7 @@ export class DashboardControls extends LitElement {
                   aria-hidden="true">${on
                     ? html`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
                         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2.6 6.4 4.9 8.6 9.4 3.4" />
+                        <path d="M2.6 7.07 4.9 9.27 9.4 4.07" />
                       </svg>`
                     : nothing}</span>
                 <span>${r.name}</span>
@@ -208,7 +208,11 @@ export class DashboardControls extends LitElement {
     .system-group { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 12px; }
     .estimate-group .route-label { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
     .route-label { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-    .route-note { font-size: 12px; color: var(--muted-2,#8a97a0); line-height: 1.35; }
+    /* 16px, not 1.35: at 12px that ratio computes to 16.2px, and the fractional
+       height cascaded down to push this group's chips 0.188px off the pixel grid,
+       so their checkmarks rasterised at a different sub-pixel phase than the
+       system group's. Keep line-heights here whole-pixel. */
+    .route-note { font-size: 12px; color: var(--muted-2,#8a97a0); line-height: 16px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
     .chip {
       display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
@@ -226,7 +230,10 @@ export class DashboardControls extends LitElement {
     /* The check is inline SVG rather than a "✓" glyph on purpose: Mulish has no
        U+2713, so the glyph came from a fallback font while the line box was sized
        from Mulish's metrics — centring the line box left the mark 2.1px low. An
-       SVG box centres geometrically, independent of font metrics. */
+       SVG box centres geometrically, independent of font metrics.
+       The path sits 0.67 units (0.5px) below the viewBox centre on purpose: a
+       check's mass hangs off its bottom vertex, so a geometrically centred one
+       reads high. Optical, not arithmetic — don't "correct" it back to 6.0. */
     .state-icon svg { display: block; width: 9px; height: 9px; }
     .state-icon.selected { background: var(--ink, #053955); opacity: 1; }
     .chip.on {
