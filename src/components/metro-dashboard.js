@@ -392,9 +392,13 @@ export class MetroDashboard extends LitElement {
     .lg { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--muted,#5b6b75); }
     .lg-dot { width: 11px; height: 11px; border: 1px solid var(--ink, #053955); border-radius: 3px; }
     .lg-est {
-      font-size: 10.5px; line-height: 1; text-transform: uppercase; letter-spacing: .06em;
+      /* 12px line-height + 2px padding + 2px border = an even 18px box. Under the
+         previous line-height:1 the box came out 18.5px, so the 1px borders landed
+         on half-pixels and rasterised unevenly — which reads as the text sitting
+         off-centre even though it measures centred to within 0.05px. */
+      font-size: 10.5px; line-height: 12px; text-transform: uppercase; letter-spacing: .06em;
       color: var(--muted, #5b6b75); border: 1px solid var(--metro-gray, #707070);
-      border-radius: 999px; padding: 3px 5px;
+      border-radius: 999px; padding: 2px 5px;
     }
     .download {
       display: inline-flex; align-items: center; gap: 7px; flex: none;
