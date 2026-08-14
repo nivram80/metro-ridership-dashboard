@@ -12,6 +12,7 @@ import { fmtInt, fmtCompact } from "../data-store.js";
 //   chartType  "bar" | "line"
 //   stacked    boolean        (only affects bar mode w/ >1 series)
 //   granularity "day"|"month"|"year"
+//   accessibleLabel string    (direct label avoids cross-shadow ARIA references)
 // ------------------------------------------------------------------
 export class RidershipChart extends LitElement {
   static properties = {
@@ -20,6 +21,7 @@ export class RidershipChart extends LitElement {
     chartType: { type: String },
     stacked: { type: Boolean },
     granularity: { type: String },
+    accessibleLabel: { type: String },
     _w: { state: true },
     _hover: { state: true },
   };
@@ -31,6 +33,7 @@ export class RidershipChart extends LitElement {
     this.chartType = "bar";
     this.stacked = false;
     this.granularity = "month";
+    this.accessibleLabel = "Passenger trips chart";
     this._w = 800;
     this._hover = -1;
     this._ro = new ResizeObserver((entries) => {
@@ -128,7 +131,7 @@ export class RidershipChart extends LitElement {
     const W = this._w, H = this._H;
     return html`
       <svg viewBox="0 0 ${W} ${H}" width="100%" height=${H}
-           role="img" aria-label="Passenger trips chart" preserveAspectRatio="none">
+           role="img" aria-label=${this.accessibleLabel} preserveAspectRatio="none">
         ${this._renderGrid(ticks, niceMax)}
         ${this.chartType === "line" ? this._renderLines(niceMax) : this._renderBars(niceMax)}
         ${this._renderHoverLayer()}
@@ -194,6 +197,7 @@ export class RidershipChart extends LitElement {
       const single = this.series.length === 1;
       return svg`
         ${single ? svg`<path d=${areaD} fill=${ser.color} opacity="0.10"></path>` : nothing}
+        <path class="line-outline" d=${d} fill="none"></path>
         <path class="line" d=${d} stroke=${ser.color} fill="none"></path>
         ${pts.map((p, i) => svg`<circle class="dot ${this._hover === i ? "on" : ""}"
             cx=${p[0]} cy=${p[1]} r=${this._hover === i ? 4.5 : 0} fill=${ser.color}></circle>`)}
@@ -268,15 +272,24 @@ export class RidershipChart extends LitElement {
           <div class="tip-row">
             <span class="sw" style="background:${r.color}"></span>
             <span class="tip-name">${r.name}</span>
-            <span class="tip-val u-num">${r.estimated ? "~" : ""}${fmtInt(r.value)}</span>
+            <span class="tip-val u-num">${this._value(r.value, r.estimated)}</span>
           </div>`)}
         ${this.series.length > 1
           ? html`<div class="tip-row tip-total">
               <span class="sw" style="background:transparent"></span>
               <span class="tip-name">Total</span>
-              <span class="tip-val u-num">${estimated ? "~" : ""}${fmtInt(total)}</span></div>`
+              <span class="tip-val u-num">${this._value(total, estimated)}</span></div>`
           : nothing}
       </div>`;
+  }
+
+  _value(value, estimated) {
+    const formatted = fmtInt(value);
+    if (!estimated) return formatted;
+    return html`
+      <span aria-hidden="true">~${formatted}</span>
+      <span class="sr-only">Approximately ${formatted}</span>
+    `;
   }
 
   static styles = css`
@@ -287,14 +300,15 @@ export class RidershipChart extends LitElement {
     .grid { stroke: #eef1f3; stroke-width: 1; }
     .axis { stroke: #cdd6db; stroke-width: 1; }
     .ytick, .xtick {
-      fill: #7e8b93; font-family: var(--font-body, sans-serif);
+      fill: var(--muted, #5b6b75); font-family: var(--font-body, sans-serif);
       font-size: 12px; font-variant-numeric: tabular-nums;
     }
     .xtick { font-size: 12px; }
 
-    .bar { transition: opacity .12s ease; }
+    .bar { stroke: var(--ink, #053955); stroke-width: .6; transition: opacity .12s ease; }
+    .line-outline { stroke: var(--ink, #053955); stroke-width: 4.5; stroke-linejoin: round; stroke-linecap: round; }
     .line { stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
-    .dot { transition: r .1s ease; }
+    .dot { stroke: var(--ink, #053955); stroke-width: 1.5; transition: r .1s ease; }
     g.dim { opacity: .32; transition: opacity .12s ease; }
 
     .band-hit { fill: transparent; cursor: pointer; }
@@ -318,6 +332,10 @@ export class RidershipChart extends LitElement {
     .tip-val { color: var(--ink, #053955); font-weight: 700; font-size: 13px; }
     .tip-total { border-top: 1px solid var(--line-2,#eef1f3); margin-top: 4px; padding-top: 5px; }
     .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
 
     .empty {
       display: grid; place-items: center; text-align: center;

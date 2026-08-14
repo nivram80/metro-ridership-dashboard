@@ -16,13 +16,12 @@ export class StatCards extends LitElement {
     if (!s) return nothing;
     const yoy = s.yoy;
     const up = yoy && yoy.pct >= 0;
-    const approx = s.estimated ? "~" : "";
 
     return html`
       <div class="grid">
-        ${this._card(s.estimated ? "Estimated passenger trips" : "Total passenger trips", `${approx}${fmtInt(s.grandTotal)}`, this.rangeLabel, "accent")}
-        ${this._card(s.avgLabel, `${approx}${fmtInt(s.avg)}`, `${s.periodCount} period${s.periodCount === 1 ? "" : "s"}`)}
-        ${this._card("Busiest period", s.peak ? `${approx}${fmtInt(s.peak.value)}` : "—", s.peak ? s.peak.long : "")}
+        ${this._card(s.estimated ? "Estimated passenger trips" : "Total passenger trips", this._value(s.grandTotal, s.estimated), this.rangeLabel, "accent")}
+        ${this._card(s.avgLabel, this._value(s.avg, s.estimated), `${s.periodCount} period${s.periodCount === 1 ? "" : "s"}`)}
+        ${this._card("Busiest period", s.peak ? this._value(s.peak.value, s.estimated) : "—", s.peak ? s.peak.long : "")}
         ${yoy
           ? this._card(
               "Year over year",
@@ -30,6 +29,15 @@ export class StatCards extends LitElement {
               `${yoy.fromYear} → ${yoy.toYear} (full years)`)
           : this._card("Year over year", "—", "Needs 2 complete years")}
       </div>
+    `;
+  }
+
+  _value(value, estimated) {
+    const formatted = fmtInt(value);
+    if (!estimated) return formatted;
+    return html`
+      <span aria-hidden="true">~${formatted}</span>
+      <span class="sr-only">Approximately ${formatted}</span>
     `;
   }
 
@@ -58,9 +66,9 @@ export class StatCards extends LitElement {
       background: var(--metro-blue, #007DBA);
       border-color: transparent;
     }
-    .card.accent .card-label { color: rgba(255,255,255,.82); }
+    .card.accent .card-label { color: #fff; }
     .card.accent .card-value { color: #fff; }
-    .card.accent .card-sub { color: rgba(255,255,255,.78); }
+    .card.accent .card-sub { color: #fff; }
 
     .card-label {
       font-family: var(--font-display, sans-serif); text-transform: uppercase;
@@ -72,6 +80,10 @@ export class StatCards extends LitElement {
       font-size: 32px; line-height: 1.1; margin: 6px 0 4px; color: var(--ink,#053955);
     }
     .card-sub { font-size: 12.5px; color: var(--muted,#5b6b75); }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
     .yoy.up { color: var(--metro-green, #5fa524); }
     .yoy.down { color: var(--metro-red, #CF594A); }
     .card.accent .yoy { color: #fff; }

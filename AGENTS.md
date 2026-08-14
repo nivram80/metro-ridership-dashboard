@@ -12,6 +12,13 @@ The immediate purpose is to **show the Metro board** a working prototype in orde
 to encourage them to share route-level ridership data. Keep the presentation
 polished and on-brand — this is a persuasion tool, not just an internal utility.
 
+**Canonical URL: <https://omahatransitdata.org>.** Use it in docs, metadata,
+share links, and anything shown to Metro. `www.omahatransitdata.org` `301`s to it.
+The original `metro-ridership-dashboard.todd-nichols.workers.dev` address still
+serves the same site and is deliberately left in place until Metro has been told
+about the new domain — don't cite it as the project's address, and don't disable
+or redirect it without asking Todd first.
+
 ## Tech-stack constraints
 
 - **Lit web components** (`LitElement` + lit-html) + **vanilla JavaScript** + **pure CSS**.
@@ -35,7 +42,7 @@ polished and on-brand — this is a persuasion tool, not just an internal utilit
 
 ## Data pipeline
 
-**Never hand-edit `data/ridership.json`.** It is generated.
+**Never hand-edit `data/ridership.json` or `data/ridership.csv`.** They are generated together.
 
 1. Edit the monthly figures in `scripts/build-data.mjs`.
 2. Run `node scripts/build-data.mjs`.
@@ -49,10 +56,10 @@ Source data comes from the Metro Board Packet ("Fixed-Route Passenger Trips
 
 ### Estimated route dataset
 
-`data/route-estimates-2026.json` is also generated, but it is intentionally
-separate from the official system-wide dataset. It contains approximate
-route-level January-May 2026 totals estimated from the Amended June 2026 Board
-Packet "Ridership by Route" bar charts on pages 101-103.
+`data/route-estimates-2026.json` and `data/route-estimates-2026.csv` are also generated, but they are intentionally
+separate from the official system-wide dataset. They contain approximate
+route-level January-June 2026 totals estimated from the July 2026 Updated Board
+Packet "Ridership by Route" bar chart on PDF page 31.
 
 - **Never treat route estimates as official Metro data.** The UI marks these
   values as estimated, uses `~` in KPIs/tooltips, and keeps the footer caveat.
@@ -86,8 +93,8 @@ preserving estimate metadata.
 ```
 index.html                 import map + fonts + <metro-dashboard>
 styles/global.css          design tokens (brand palette, type)
-data/ridership.json        generated dataset (do not hand-edit)
-data/route-estimates-2026.json generated estimated route dataset (do not hand-edit)
+data/ridership.{json,csv}  generated official dataset (do not hand-edit)
+data/route-estimates-2026.{json,csv} generated estimated route dataset (do not hand-edit)
 scripts/build-data.mjs     dataset generator (verifies annual totals)
 scripts/build-route-estimates.mjs route-estimate generator
 src/
@@ -98,6 +105,7 @@ src/
     dashboard-controls.js  granularity / chart / year-range / route filters
     stat-cards.js          KPI summary cards
     ridership-chart.js     dependency-free SVG chart (bar/stacked/grouped/line)
+    ridership-table.js     accessible tabular equivalent of the chart
     data-import.js         CSV / JSON import (currently unused, kept for re-enable)
 vendor/lit.js              vendored Lit 3.2.1 bundle
 ```

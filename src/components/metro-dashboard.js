@@ -1,9 +1,10 @@
 import { LitElement, html, css, nothing } from "lit";
-import { loadData, mergeData, aggregate, summarize } from "../data-store.js";
+import { loadData, mergeData, aggregate, summarize, fmtInt } from "../data-store.js";
 
 import "./dashboard-controls.js";
 import "./stat-cards.js";
 import "./ridership-chart.js";
+import "./ridership-table.js";
 
 // ------------------------------------------------------------------
 // <metro-dashboard> — application root. Owns the dataset and the
@@ -17,6 +18,7 @@ export class MetroDashboard extends LitElement {
     _data: { state: true },
     _state: { state: true },
     _error: { state: true },
+    _announcement: { state: true },
   };
 
   constructor() {
@@ -25,6 +27,7 @@ export class MetroDashboard extends LitElement {
     this.estimatesSrc = "./data/route-estimates-2026.json";
     this._data = null;
     this._error = null;
+    this._announcement = "";
     this._state = {
       granularity: "month",
       chartType: "bar",
@@ -93,6 +96,7 @@ export class MetroDashboard extends LitElement {
       else next.fromYear = next.toYear;
     }
     this._state = next;
+    this._announcement = this._announcementText(next);
   }
 
   _yearsForRoutes(routeIds) {
@@ -109,6 +113,44 @@ export class MetroDashboard extends LitElement {
   _rangeLabel() {
     const { fromYear, toYear } = this._state;
     return fromYear === toYear ? `${fromYear}` : `${fromYear}–${toYear}`;
+  }
+
+  _announcementText(state) {
+    const agg = aggregate(this._data, state);
+    const routeCount = state.routeIds.length;
+    const periodCount = agg.periods.length;
+    const unit = state.granularity === "year" ? "year" : state.granularity === "month" ? "month" : "day";
+    const estimated = agg.series.some((series) => series.estimated);
+    const display = state.chartType === "table" ? "table" : `${state.chartType} chart`;
+    const range = state.fromYear === state.toYear ? `${state.fromYear}` : `${state.fromYear} through ${state.toYear}`;
+    return `Showing ${routeCount} ${routeCount === 1 ? "route" : "routes"}, ${periodCount} ${unit}${periodCount === 1 ? "" : "s"}, ${range}, ${estimated ? "approximately " : ""}${fmtInt(agg.grandTotal)} trips, as a ${display}.`;
+  }
+
+  _downloadCsv(agg) {
+    const rows = [["period", "period_label", "route_id", "route_name", "trips", "estimated"]];
+    agg.periods.forEach((period, periodIndex) => {
+      agg.series.forEach((series) => {
+        const point = series.points[periodIndex];
+        rows.push([
+          period.key,
+          period.long,
+          series.routeId,
+          series.name,
+          point?.value || 0,
+          Boolean(series.estimated || point?.estimated),
+        ]);
+      });
+    });
+    const csv = rows.map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `omaha-metro-ridership-${this._state.granularity}-${this._state.fromYear}-${this._state.toYear}.csv`;
+    link.hidden = true;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   render() {
@@ -152,6 +194,7 @@ export class MetroDashboard extends LitElement {
       </header>
 
       <main class="wrap">
+        <div class="sr-only" aria-live="polite" aria-atomic="true">${this._announcement}</div>
         <section class="hero">
           <h1>Fixed-Route Passenger Trips</h1>
           <p class="hero-sub">
@@ -178,25 +221,43 @@ export class MetroDashboard extends LitElement {
               <h2>${this._chartTitle()}</h2>
               <p class="chart-meta">${this._chartMeta(agg)}</p>
             </div>
-            ${this._data.routes.length > 1 ? html`
+            <div class="chart-actions">
+            ${this._data.routes.length > 1 && this._state.chartType !== "table" ? html`
               <div class="legend">
                 ${this._state.routeIds.map((id) => {
                   const r = this._data.routes.find((x) => x.id === id);
                   return html`<span class="lg">
                     <span class="lg-dot" style="background:${r.color}"></span>${r.name}
-                    ${r.estimated ? html`<span class="lg-est">est.</span>` : nothing}
+                    ${r.estimated ? html`<span class="lg-est">estimated</span>` : nothing}
                   </span>`;
                 })}
               </div>` : nothing}
+              <button class="download" @click=${() => this._downloadCsv(agg)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>
+                </svg>
+                Download CSV
+              </button>
+            </div>
           </div>
 
-          <ridership-chart
-            .periods=${agg.periods}
-            .series=${agg.series}
-            chartType=${this._state.chartType}
-            .stacked=${this._state.stacked}
-            granularity=${this._state.granularity}>
-          </ridership-chart>
+          ${this._state.chartType === "table" ? html`
+            <ridership-table
+              .periods=${agg.periods}
+              .series=${agg.series}
+              rangeLabel=${this._rangeLabel()}>
+            </ridership-table>
+          ` : html`
+            <ridership-chart
+              .periods=${agg.periods}
+              .series=${agg.series}
+              chartType=${this._state.chartType}
+              .stacked=${this._state.stacked}
+              granularity=${this._state.granularity}
+              accessibleLabel=${`${this._chartTitle()}. ${this._chartMeta(agg)}. Exact values are available in the Table display.`}>
+            </ridership-chart>
+          `}
         </section>
 
         <footer class="foot">
@@ -324,15 +385,30 @@ export class MetroDashboard extends LitElement {
       display: flex; align-items: flex-start; justify-content: space-between;
       gap: 16px; flex-wrap: wrap; margin-bottom: 6px;
     }
-    .chart-head h2 { font-size: 21px; color: var(--ink, #053955); }
+    .chart-actions { display: flex; align-items: center; justify-content: flex-end; gap: 14px; flex-wrap: wrap; }
+    .chart-head h2 { margin: 0; font-size: 21px; color: var(--ink, #053955); }
     .chart-meta { margin: 4px 0 0; font-size: 13px; color: var(--muted-2,#8a97a0); }
     .legend { display: flex; flex-wrap: wrap; gap: 12px 16px; }
     .lg { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: var(--muted,#5b6b75); }
-    .lg-dot { width: 11px; height: 11px; border-radius: 3px; }
+    .lg-dot { width: 11px; height: 11px; border: 1px solid var(--ink, #053955); border-radius: 3px; }
     .lg-est {
       font-size: 10.5px; line-height: 1; text-transform: uppercase; letter-spacing: .06em;
-      color: var(--muted-2,#8a97a0); border: 1px solid var(--line,#dfe4e8);
+      color: var(--muted, #5b6b75); border: 1px solid var(--metro-gray, #707070);
       border-radius: 999px; padding: 3px 5px;
+    }
+    .download {
+      display: inline-flex; align-items: center; gap: 7px; flex: none;
+      appearance: none; border: 1px solid var(--metro-blue, #007DBA); border-radius: 9px;
+      padding: 8px 11px; color: var(--metro-blue, #007DBA); background: #fff;
+      font-family: var(--font-body, sans-serif); font-size: 12.5px; font-weight: 800;
+      cursor: pointer;
+    }
+    .download:hover { background: #eef7fb; }
+    .download:focus-visible { outline: 3px solid var(--metro-blue, #007DBA); outline-offset: 3px; }
+    .download svg { width: 15px; height: 15px; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
     }
 
     /* Footer */
@@ -360,3 +436,9 @@ export class MetroDashboard extends LitElement {
 }
 
 customElements.define("metro-dashboard", MetroDashboard);
+
+function csvCell(value) {
+  let text = String(value ?? "");
+  if (/^[=+\-@]/.test(text)) text = `'${text}`;
+  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}

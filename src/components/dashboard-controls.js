@@ -10,7 +10,7 @@ export class DashboardControls extends LitElement {
   static properties = {
     routes: { attribute: false },     // [{id,name,color}]
     years: { attribute: false },      // [2019, ...]
-    state: { attribute: false },      // { granularity, chartType, stacked, routeIds, fromYear, toYear }
+    state: { attribute: false },      // chartType is "bar", "line", or "table"
     hasDaily: { type: Boolean },
   };
 
@@ -62,7 +62,7 @@ export class DashboardControls extends LitElement {
       <div class="bar">
         <div class="group">
           <span class="label">View by</span>
-          <div class="seg" role="tablist" aria-label="Granularity">
+          <div class="seg" role="group" aria-label="View by">
             ${this._segBtn("day", "Day", s.granularity, "granularity",
               this.hasDaily ? "" : "Monthly source data — import daily data to enable")}
             ${this._segBtn("month", "Month", s.granularity, "granularity")}
@@ -71,27 +71,30 @@ export class DashboardControls extends LitElement {
         </div>
 
         <div class="group">
-          <span class="label">Chart</span>
-          <div class="seg" role="tablist" aria-label="Chart type">
+          <span class="label">Display</span>
+          <div class="seg" role="group" aria-label="Display">
             ${this._segBtn("bar", "Bars", s.chartType, "chartType")}
             ${this._segBtn("line", "Line", s.chartType, "chartType")}
+            ${this._segBtn("table", "Table", s.chartType, "chartType")}
           </div>
         </div>
 
         ${multi && s.chartType === "bar" ? html`
           <div class="group">
             <span class="label">Bars</span>
-            <div class="seg">
+            <div class="seg" role="group" aria-label="Bar arrangement">
               <button class=${"sbtn " + (!s.stacked ? "on" : "")}
+                aria-pressed=${!s.stacked}
                 @click=${() => this._emit({ stacked: false })}>Grouped</button>
               <button class=${"sbtn " + (s.stacked ? "on" : "")}
+                aria-pressed=${s.stacked}
                 @click=${() => this._emit({ stacked: true })}>Stacked</button>
             </div>
           </div>` : nothing}
 
         <div class="group">
           <span class="label">Years</span>
-          <div class="range">
+          <div class="range" role="group" aria-label="Year range">
             <select class="sel" .value=${String(s.fromYear)} aria-label="From year"
               @change=${(e) => this._emit({ fromYear: Number(e.target.value) })}>
               ${this.years.map((y) => html`<option value=${y} ?selected=${y === s.fromYear}>${y}</option>`)}
@@ -121,18 +124,19 @@ export class DashboardControls extends LitElement {
           <span class="label">${label}</span>
           ${note ? html`<span class="route-note">${note}</span>` : nothing}
         </div>
-        <div class="chips">
+        <div class="chips" role="group" aria-label=${note ? `${label}. ${note}` : label}>
           ${routes.map((r) => {
             const on = this.state.routeIds.includes(r.id);
             const aria = r.estimated ? `${r.name}, estimated route total` : r.name;
             return html`
               <button class=${"chip " + (on ? "on" : "") + (r.estimated ? " estimated" : "")}
-                style=${on ? `--chip:${r.color}` : ""}
                 aria-pressed=${on}
                 aria-label=${aria}
                 title=${r.estimated ? "Estimated route total" : nothing}
                 @click=${() => this._toggleRoute(r.id)}>
-                <span class="dot" style="background:${r.color}"></span>
+                <span class=${on ? "state-icon selected" : "state-icon"}
+                  style=${on ? "" : `background:${r.color}`}
+                  aria-hidden="true">${on ? "✓" : ""}</span>
                 <span>${r.name}</span>
               </button>`;
           })}
@@ -145,7 +149,7 @@ export class DashboardControls extends LitElement {
     const disabled = field === "granularity" && value === "day" && !this.hasDaily;
     return html`
       <button class=${"sbtn " + (current === value ? "on" : "")}
-        ?disabled=${disabled} title=${title || nothing}
+        ?disabled=${disabled} title=${title || nothing} aria-pressed=${current === value}
         @click=${() => !disabled && this._emit({ [field]: value })}>${text}</button>`;
   }
 
@@ -176,6 +180,9 @@ export class DashboardControls extends LitElement {
       box-shadow: var(--shadow-sm, 0 1px 2px rgba(5,57,85,.12));
     }
     .sbtn[disabled] { opacity: .4; cursor: not-allowed; }
+    .sbtn:focus-visible, .sel:focus-visible, .chip:focus-visible {
+      outline: 3px solid var(--metro-blue, #007DBA); outline-offset: 3px;
+    }
 
     .sel {
       appearance: none; font-family: var(--font-body, sans-serif); font-weight: 700;
@@ -206,11 +213,16 @@ export class DashboardControls extends LitElement {
       padding: 6px 10px; transition: border-color .12s, color .12s, background .12s;
     }
     .chip:hover { border-color: var(--muted-2,#8a97a0); }
-    .chip .dot { width: 9px; height: 9px; border-radius: 50%; opacity: .35; transition: opacity .12s; }
-    .chip.on {
-      color: #fff; background: var(--chip, #007DBA); border-color: var(--chip, #007DBA);
+    .state-icon {
+      display: inline-grid; place-items: center; width: 12px; height: 12px; flex: none;
+      border: 1px solid var(--ink, #053955); border-radius: 50%; opacity: .75;
+      color: #fff; font-size: 9px; line-height: 1;
     }
-    .chip.on .dot { background: #fff !important; opacity: 1; }
+    .state-icon.selected { background: var(--ink, #053955); opacity: 1; }
+    .chip.on {
+      color: var(--ink, #053955); background: #f4f7f9; border-color: var(--ink, #053955);
+      box-shadow: inset 0 0 0 1px var(--ink, #053955);
+    }
 
     @media (max-width: 640px) {
       .bar { gap: 12px 16px; }

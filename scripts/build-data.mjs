@@ -71,5 +71,26 @@ const data = {
 
 const out = join(__dirname, "..", "data", "ridership.json");
 writeFileSync(out, JSON.stringify(data, null, 2) + "\n");
+const routeNames = new Map(data.routes.map((route) => [route.id, route.name]));
+const csv = [
+  ["route_id", "route_name", "year", "month", "day", "trips", "estimated"],
+  ...records.map((record) => [
+    record.routeId,
+    routeNames.get(record.routeId) || record.routeId,
+    record.year,
+    record.month,
+    record.day ?? "",
+    record.trips,
+    false,
+  ]),
+].map((row) => row.map(csvCell).join(",")).join("\n") + "\n";
+const csvOut = join(__dirname, "..", "data", "ridership.csv");
+writeFileSync(csvOut, csv);
 console.log(`Wrote ${records.length} records to ${out}`);
+console.log(`Wrote ${records.length} records to ${csvOut}`);
 console.log("All annual totals verified against the printed chart totals.");
+
+function csvCell(value) {
+  const text = String(value ?? "");
+  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}
