@@ -1,7 +1,8 @@
 // Generates data/route-estimates-2026.json from route-level estimates read from
 // Metro's "Ridership by Route" bar charts.
 //
-// Source: July 2026 Updated Board Packet, PDF page 31.
+// Sources: months 1-6 from the July 2026 Updated Board Packet, PDF page 31;
+//          month 7 from the August 2026 Board Packet, PDF page 116.
 // Method: Bar heights were extracted from high-resolution chart renders,
 // calibrated against each chart's y-axis, scaled to the official monthly
 // system total, and rounded to the nearest 100 trips.
@@ -53,6 +54,7 @@ const OFFICIAL_TOTALS = {
   4: 315938,
   5: 322056,
   6: 319644,
+  7: 287348,
 };
 
 // Estimated monthly passenger trips by route and service-day category.
@@ -225,6 +227,34 @@ const ESTIMATES = {
     "120": { weekday: 400, saturday: 0, sunday: 0 },
     "200": { weekday: 1000, saturday: 200, sunday: 200 },
   },
+  7: {
+    orbt: { weekday: 42000, saturday: 4000, sunday: 3800 },
+    "3": { weekday: 16800, saturday: 1100, sunday: 1100 },
+    "4": { weekday: 26700, saturday: 2000, sunday: 2000 },
+    "5": { weekday: 5100, saturday: 300, sunday: 0 },
+    "8": { weekday: 4300, saturday: 300, sunday: 0 },
+    "11": { weekday: 11600, saturday: 800, sunday: 800 },
+    "13": { weekday: 13600, saturday: 1100, sunday: 1100 },
+    "14": { weekday: 6500, saturday: 600, sunday: 0 },
+    "15": { weekday: 10500, saturday: 900, sunday: 1000 },
+    "18": { weekday: 42800, saturday: 4400, sunday: 3500 },
+    "24": { weekday: 24500, saturday: 1900, sunday: 1900 },
+    "26": { weekday: 3300, saturday: 100, sunday: 200 },
+    "30": { weekday: 12900, saturday: 1100, sunday: 1100 },
+    "35": { weekday: 4700, saturday: 200, sunday: 300 },
+    "36": { weekday: 2300, saturday: 100, sunday: 0 },
+    "41": { weekday: 6300, saturday: 0, sunday: 0 },
+    "43": { weekday: 6300, saturday: 600, sunday: 0 },
+    "55": { weekday: 4500, saturday: 300, sunday: 0 },
+    "92": { weekday: 500, saturday: 0, sunday: 0 },
+    "93": { weekday: 300, saturday: 0, sunday: 0 },
+    "94": { weekday: 500, saturday: 0, sunday: 0 },
+    "95": { weekday: 400, saturday: 0, sunday: 0 },
+    "97": { weekday: 800, saturday: 0, sunday: 0 },
+    "106": { weekday: 2500, saturday: 0, sunday: 0 },
+    "120": { weekday: 300, saturday: 0, sunday: 0 },
+    "200": { weekday: 400, saturday: 200, sunday: 100 },
+  },
 };
 
 const records = [];
@@ -258,12 +288,12 @@ const data = {
   title: "Omaha Metro — Estimated Route Passenger Trips",
   estimated: true,
   source: {
-    name: "Metro (Omaha) July 2026 Updated Board Packet — Ridership by Route charts",
-    url: "https://www.ometro.com/july-2026-board-packet-v3-7-21-2026/",
-    note: "Approximate route-level trips estimated from bar heights on PDF page 31; values rounded to the nearest 100.",
-    asOf: "2026-06",
-    dataThrough: "June 2026",
-    pages: "PDF page 31",
+    name: "Metro (Omaha) July + August 2026 Board Packets — Ridership by Route charts",
+    url: "https://www.ometro.com/august-2026-board-packet/",
+    note: "Approximate route-level trips estimated from bar heights on the monthly Ridership by Route charts; values rounded to the nearest 100.",
+    asOf: "2026-07",
+    dataThrough: "July 2026",
+    pages: "July packet PDF page 31 (Jan-Jun) and August packet PDF page 116 (Jul)",
     method: "Bar-height estimate calibrated to each chart axis and scaled to monthly system totals.",
   },
   routes: ROUTES.map((route) => ({ ...route, estimated: true })),

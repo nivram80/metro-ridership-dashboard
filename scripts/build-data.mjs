@@ -2,7 +2,7 @@
 // figures transcribed from Metro (Omaha) monthly Board Packets.
 //
 // Source: ometro.com Board of Directors -> Board Agendas -> monthly Board Packet
-//         "Fixed-Route Passenger Trips 2019 - 2026" chart (July 2026 packet, PDF p.34).
+//         "Fixed-Route Passenger Trips 2019 - 2026" chart (August 2026 packet, PDF p.119).
 // Each year's twelve monthly values were read from the chart and the sum was
 // checked against the printed annual total before being committed here.
 //
@@ -19,7 +19,7 @@ import { dirname, join } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Monthly fixed-route passenger trips, Jan -> Dec, by year.
-// 2026 is a partial year (Jan-June) at the time of the July 2026 packet.
+// 2026 is a partial year (Jan-July) at the time of the August 2026 packet.
 const MONTHLY = {
   2019: [246549, 215669, 255145, 290589, 285332, 278260, 290204, 299048, 286399, 306193, 261682, 252775],
   2020: [253088, 260753, 215274, 163546, 170120, 161694, 145405, 152432, 150009, 160127, 142950, 151954],
@@ -28,13 +28,13 @@ const MONTHLY = {
   2023: [221680, 216605, 265168, 252984, 285001, 266103, 238136, 310563, 302739, 320112, 287233, 259495],
   2024: [215866, 283842, 270264, 310200, 305488, 266247, 264906, 291380, 305514, 335418, 280562, 256030],
   2025: [262067, 241867, 282490, 315926, 313787, 285685, 271089, 296700, 329072, 349607, 286209, 277538],
-  2026: [268640, 277303, 307953, 315938, 322056, 319644],
+  2026: [268640, 277303, 307953, 315938, 322056, 319644, 287348],
 };
 
 // Annual totals printed on the chart — used purely to verify the transcription.
 const PRINTED_TOTALS = {
   2019: 3267845, 2020: 2127352, 2021: 2084221, 2022: 2634023,
-  2023: 3225819, 2024: 3385717, 2025: 3512037, 2026: 1811534,
+  2023: 3225819, 2024: 3385717, 2025: 3512037, 2026: 2098882,
 };
 
 for (const [year, months] of Object.entries(MONTHLY)) {
@@ -54,11 +54,11 @@ for (const [year, months] of Object.entries(MONTHLY)) {
 const data = {
   title: "Omaha Metro — Fixed-Route Passenger Trips",
   source: {
-    name: "Metro July 2026 Updated Board Packet",
-    url: "https://www.ometro.com/july-2026-board-packet-v3-7-21-2026/",
+    name: "Metro August 2026 Board Packet",
+    url: "https://www.ometro.com/august-2026-board-packet/",
     note: "Monthly system-wide fixed-route trips read from the Board Packet ridership chart.",
-    asOf: "2026-06",
-    dataThrough: "June 2026",
+    asOf: "2026-07",
+    dataThrough: "July 2026",
   },
   // Add route-level series here when the Board provides them, e.g.
   //   { "id": "11", "name": "Route 11", "color": "#00B398" }
