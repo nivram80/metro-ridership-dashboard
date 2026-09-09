@@ -6,9 +6,12 @@
 // The feed publishes every route TWICE, once per service period (spring and
 // fall schedules), under two different route_ids. This script picks whichever
 // period covers today's date, dedupes to one route_id per route_short_name,
-// picks the single longest shape per (route, direction), simplifies it with
+// picks per (route, direction) the longest shape among those used by at
+// least MIN_TRIP_SHARE of that route-direction's trips (see the comment
+// above the shape-selection section below for why), simplifies it with
 // Douglas-Peucker in projected pixel space, and emits ready-to-draw "d"
-// attributes plus an accessible display color per route.
+// attributes, per-path trip-share provenance, and an accessible display
+// color per route.
 //
 // Run:  node scripts/build-routes.mjs [path-to-gtfs-dir]
 //
@@ -236,15 +239,46 @@ if (idToRoute.size !== 26) {
 // ---------------------------------------------------------------------------
 // 4. Pick one representative shape per (route, direction_id)
 // ---------------------------------------------------------------------------
-// A route can have 2-12 shape_ids per direction: short-turns, detours, and
-// the full-length pattern. We pick the LONGEST shape, measured by cumulative
-// great-circle distance, rather than the shape used by the most trips.
-// "Longest" was chosen deliberately: this map exists to answer "where does
-// this route go?", not "what does the average trip look like?" — a short-turn
-// pattern run on most weekday trips would visually amputate the route. Verified
-// against this feed: the longest-shape and most-used-shape choices disagree
-// for 39 of the 48 route-directions here, so the choice is consequential, not
-// a rare edge case.
+// A route can have 2-12 shape_ids per direction: short-turns, detours, the
+// full-length pattern — and, it turns out, garage deadhead trips. A deadhead
+// ("pull-out"/"pull-in") is a trip an agency runs to move a bus between the
+// garage and the start or end of a route's actual passenger-carrying pattern.
+// Metro's feed models these as completely ordinary trips, each with its own
+// (often longer) shape_id: trip_headsign is blank on every trip in the active
+// service period, and pickup_type/drop_off_type show only the normal
+// one-"1"-at-each-end terminus convention. The garage stop is a genuinely
+// boardable stop as far as the feed is concerned. Nothing marks a deadhead as
+// special — the only usable signal is that almost nobody rides it: deadhead
+// shapes are typically used by a small single-digit percentage of that
+// route-direction's trips.
+//
+// Picking the LONGEST shape (what this script used to do) picks exactly the
+// deadhead, every time. Concretely, in this feed: ORBT direction 0's longest
+// shape is used by 19 of 226 trips (8%), is 14,909 m, and starts at "22nd &
+// Cuming SE" — Metro's bus garage — instead of "11th & Dodge", where Metro's
+// own passenger map starts the route; the shape the other 207 trips (92%)
+// actually run is 12,578 m and starts at the real terminus. This was not a
+// one-off: 30 of the 48 shipped route-directions in this feed turned out to
+// be exactly this bug, a shape used by under 10% of that direction's trips.
+//
+// Picking the plain MOST-USED shape is not the fix either — it fails in the
+// opposite direction. Route 13 direction 0's most-used shape is a 10,151 m
+// short-turn that a plurality of weekday trips happen to run; the real
+// full-length pattern (21,605 m, run by a smaller but still substantial share
+// of trips) is the route, not an anomaly, and most-used would visually
+// amputate it down to the short-turn.
+//
+// The rule below: among the shapes used by at least MIN_TRIP_SHARE of that
+// route-direction's trips, pick the longest by cumulative distance. 15% is a
+// judgement call, not a derived constant — high enough that a 1-5%-of-trips
+// deadhead never qualifies, low enough that a genuine peak-only or
+// weekend-only pattern (which can legitimately be a small minority of trips)
+// still does. If NO shape reaches the threshold — possible when a direction
+// has several roughly-equally-rare variants and none individually clears
+// 15% — fall back to the single most-used shape and warn, so that case is
+// visible rather than silently wrong.
+const MIN_TRIP_SHARE = 0.15;
+
 const shapesRaw = readCsv("shapes.txt");
 const shapePointsById = new Map();
 for (const row of shapesRaw) {
@@ -293,32 +327,42 @@ function shapeLengthMeters(points) {
   return total;
 }
 
-function pickLongestShape(shapeIds) {
-  let bestShapeId = null;
-  let bestLength = -1;
-  for (const shapeId of shapeIds) {
-    const points = shapePointsById.get(shapeId);
-    if (!points || points.length < 2) continue;
-    const length = shapeLengthMeters(points);
-    if (length > bestLength) {
-      bestLength = length;
-      bestShapeId = shapeId;
-    }
-  }
-  if (!bestShapeId) throw new Error(`No usable shape found among candidates: ${[...shapeIds].join(", ")}`);
-  return { shapeId: bestShapeId, points: shapePointsById.get(bestShapeId), lengthMeters: bestLength };
-}
-
-// Every trip's shape_id used per (route_id, direction_id), for the active period only.
-const shapeIdsByRouteDirection = new Map(); // "routeId|directionId" -> Set<shapeId>
+// Trip counts per shape_id, per (route_id, direction_id), for the active
+// period only — this is the only signal available for telling a deadhead
+// apart from a genuine route pattern (see the comment above).
+const shapeTripCountsByRouteDirection = new Map(); // "routeId|directionId" -> Map<shapeId, count>
 for (const t of activeTrips) {
   const key = `${t.route_id}|${t.direction_id}`;
-  let set = shapeIdsByRouteDirection.get(key);
-  if (!set) {
-    set = new Set();
-    shapeIdsByRouteDirection.set(key, set);
+  let counts = shapeTripCountsByRouteDirection.get(key);
+  if (!counts) {
+    counts = new Map();
+    shapeTripCountsByRouteDirection.set(key, counts);
   }
-  set.add(t.shape_id);
+  counts.set(t.shape_id, (counts.get(t.shape_id) ?? 0) + 1);
+}
+
+function pickShape(label, shapeCounts) {
+  const totalTrips = [...shapeCounts.values()].reduce((sum, count) => sum + count, 0);
+  const candidates = [];
+  for (const [shapeId, count] of shapeCounts) {
+    const points = shapePointsById.get(shapeId);
+    if (!points || points.length < 2) continue;
+    candidates.push({ shapeId, points, count, share: count / totalTrips, lengthMeters: shapeLengthMeters(points) });
+  }
+  if (candidates.length === 0) throw new Error(`No usable shape found among candidates for ${label}: ${[...shapeCounts.keys()].join(", ")}`);
+
+  let pool = candidates.filter((c) => c.share >= MIN_TRIP_SHARE);
+  if (pool.length === 0) {
+    const mostUsed = candidates.reduce((best, c) => (c.count > best.count ? c : best));
+    console.warn(
+      `WARNING: ${label} has no shape reaching ${(MIN_TRIP_SHARE * 100).toFixed(0)}% trip share ` +
+        `(most-used shape ${mostUsed.shapeId} is only ${(mostUsed.share * 100).toFixed(1)}% of ${totalTrips} trips). ` +
+        `Falling back to the single most-used shape.`
+    );
+    pool = [mostUsed];
+  }
+  const best = pool.reduce((a, b) => (b.lengthMeters > a.lengthMeters ? b : a));
+  return { shapeId: best.shapeId, points: best.points, lengthMeters: best.lengthMeters, tripShare: best.share, tripCount: best.count };
 }
 
 // Keep BOTH directions where they exist. Most routes trace the same streets
@@ -326,15 +370,15 @@ for (const t of activeTrips) {
 // up to 3.3 km, so dropping a direction would silently lose half the route.
 // Four routes (200, 26, 41, 43) are one-way loops with only direction 0 —
 // a missing direction here is expected, not an error.
-const selected = []; // { id, shortName, route, directionId, points, lengthMeters }
+const selected = []; // { id, shortName, route, directionId, points, lengthMeters, tripShare, tripCount }
 for (const id of expectedIds) {
   const info = idToRoute.get(id);
   for (const directionId of [0, 1]) {
     const key = `${info.routeId}|${directionId}`;
-    const shapeIds = shapeIdsByRouteDirection.get(key);
-    if (!shapeIds) continue;
-    const { shapeId, points, lengthMeters } = pickLongestShape(shapeIds);
-    selected.push({ id, shortName: info.shortName, route: info.route, directionId, shapeId, points, lengthMeters });
+    const shapeCounts = shapeTripCountsByRouteDirection.get(key);
+    if (!shapeCounts) continue;
+    const { shapeId, points, lengthMeters, tripShare, tripCount } = pickShape(`route ${id} direction ${directionId}`, shapeCounts);
+    selected.push({ id, shortName: info.shortName, route: info.route, directionId, shapeId, points, lengthMeters, tripShare, tripCount });
   }
 }
 
@@ -423,7 +467,7 @@ let pointsBefore = 0;
 let pointsAfter = 0;
 let maxRoundedDeviation = 0;
 let maxRoundedDeviationAt = null;
-const pathsByRouteId = new Map(); // dashboard id -> [{ directionId, shapeId, d }]
+const pathsByRouteId = new Map(); // dashboard id -> [{ directionId, shapeId, d, tripShare, tripCount }]
 for (const s of selected) {
   const projected = s.points.map((p) => project(p.lat, p.lon));
   pointsBefore += projected.length;
@@ -467,7 +511,7 @@ for (const s of selected) {
   }
 
   if (!pathsByRouteId.has(s.id)) pathsByRouteId.set(s.id, []);
-  pathsByRouteId.get(s.id).push({ directionId: s.directionId, shapeId: s.shapeId, d });
+  pathsByRouteId.get(s.id).push({ directionId: s.directionId, shapeId: s.shapeId, d, tripShare: Number(s.tripShare.toFixed(3)), tripCount: s.tripCount });
 }
 
 // ---------------------------------------------------------------------------
