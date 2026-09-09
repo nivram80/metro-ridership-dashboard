@@ -408,7 +408,14 @@ const metersPerPixel = widthMeters / VIEWBOX_WIDTH;
 // curving shape (exactly what transit route shapes look like) can force deep,
 // unbalanced recursion. An explicit stack has no call-depth limit — it's
 // bounded only by heap memory, which ~30,000 points comes nowhere near.
-const EPSILON_PX = 0.25;
+// 0.05px (~1.9m at 37 m/px), not the 0.25px this once used. Epsilon is a
+// SCREEN-space tolerance, so it is only honest at the zoom it was baked for:
+// geometry simplified to a quarter-pixel at 1x shows a visible 1.25px wobble
+// once magnified 5x. Baking at 0.05 buys clean detail out to roughly 5x zoom
+// for about 27% more bytes, which is cheap because these polylines were never
+// dense enough for Douglas-Peucker to remove much beyond the easy collinear
+// runs. Tighten this further if the map ever zooms deeper than 5x.
+const EPSILON_PX = 0.05;
 // A tiny allowance for floating-point arithmetic noise (sin/log/sqrt aren't
 // exact), not a loosening of the actual epsilon guarantee.
 const FLOAT_TOLERANCE = 1e-9;

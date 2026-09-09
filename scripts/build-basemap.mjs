@@ -172,7 +172,7 @@ console.log(`  ${sampleRoutes.length} sample routes' vertices all fall within th
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
-const EPSILON_PX = 0.25; // same tolerance as build-routes.mjs — see its comment on why 0.25px
+const EPSILON_PX = 0.05; // same tolerance as build-routes.mjs — see its comment on why 0.05px
 
 // Road classes to draw. Measured at eps 0.25 in the padded box: motorway+
 // trunk+primary is ~27 KB gzipped, adding secondary brings it to ~49 KB, and
