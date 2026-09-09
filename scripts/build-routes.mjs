@@ -6,20 +6,21 @@
 // The feed publishes every route TWICE, once per service period (spring and
 // fall schedules), under two different route_ids. This script picks whichever
 // period covers today's date, dedupes to one route_id per route_short_name,
-// picks per (route, direction) the longest shape among those used by at
-// least MIN_TRIP_SHARE of that route-direction's trips (see the comment
-// above the shape-selection section below for why), simplifies it with
-// Douglas-Peucker in projected pixel space, and emits ready-to-draw "d"
-// attributes, per-path trip-share provenance, and an accessible display
-// color per route.
+// picks per (route, direction) a representative shape by first excluding
+// shapes that terminate at Metro's garage and then, among what's left, the
+// longest shape used by at least MIN_TRIP_SHARE of that route-direction's
+// trips (see the comment above the shape-selection section below for why),
+// simplifies it with Douglas-Peucker in projected pixel space, and emits
+// ready-to-draw "d" attributes, per-path trip-share provenance, and an
+// accessible display color per route.
 //
 // Run:  node scripts/build-routes.mjs [path-to-gtfs-dir]
 //
 // Defaults to <repo>/gtfs/. Re-run whenever Metro publishes a new GTFS export
 // (new service period, changed shapes, or changed route colors) to regenerate
-// data/routes-geo.json. Only routes.txt, trips.txt, shapes.txt, calendar.txt,
-// and feed_info.txt are read — stops.txt, stop_times.txt, calendar_dates.txt,
-// and agency.txt are not needed for route geometry.
+// data/routes-geo.json. Reads routes.txt, trips.txt, shapes.txt, stops.txt,
+// stop_times.txt, calendar.txt, and feed_info.txt; calendar_dates.txt and
+// agency.txt are not needed for route geometry.
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
@@ -33,7 +34,7 @@ const repoRoot = join(__dirname, "..");
 const GTFS_DOWNLOAD_URL = "https://www.ometro.com/wp-content/uploads/GTFSRT/google_transit.zip";
 const gtfsDir = resolve(process.argv[2] ?? join(repoRoot, "gtfs"));
 
-const REQUIRED_FILES = ["routes.txt", "trips.txt", "shapes.txt", "calendar.txt", "feed_info.txt"];
+const REQUIRED_FILES = ["routes.txt", "trips.txt", "shapes.txt", "stops.txt", "stop_times.txt", "calendar.txt", "feed_info.txt"];
 
 if (!existsSync(gtfsDir)) {
   console.error(`GTFS directory not found: ${gtfsDir}`);
@@ -132,6 +133,8 @@ const routesRaw = readCsv("routes.txt");
 const tripsRaw = readCsv("trips.txt");
 const calendarRaw = readCsv("calendar.txt");
 const feedInfoRaw = readCsv("feed_info.txt");
+const stopsRaw = readCsv("stops.txt");
+const stopTimesRaw = readCsv("stop_times.txt");
 
 // ---------------------------------------------------------------------------
 // 1. Select the active service period
@@ -247,37 +250,115 @@ if (idToRoute.size !== 26) {
 // (often longer) shape_id: trip_headsign is blank on every trip in the active
 // service period, and pickup_type/drop_off_type show only the normal
 // one-"1"-at-each-end terminus convention. The garage stop is a genuinely
-// boardable stop as far as the feed is concerned. Nothing marks a deadhead as
-// special — the only usable signal is that almost nobody rides it: deadhead
-// shapes are typically used by a small single-digit percentage of that
-// route-direction's trips.
+// boardable stop as far as the feed is concerned.
 //
-// Picking the LONGEST shape (what this script used to do) picks exactly the
-// deadhead, every time. Concretely, in this feed: ORBT direction 0's longest
-// shape is used by 19 of 226 trips (8%), is 14,909 m, and starts at "22nd &
-// Cuming SE" — Metro's bus garage — instead of "11th & Dodge", where Metro's
-// own passenger map starts the route; the shape the other 207 trips (92%)
-// actually run is 12,578 m and starts at the real terminus. This was not a
-// one-off: 30 of the 48 shipped route-directions in this feed turned out to
-// be exactly this bug, a shape used by under 10% of that direction's trips.
+// PRIMARY RULE — garage terminus. A deadhead trip terminates AT the garage.
+// Metro's operating base is 2222 Cuming St; stops.txt has four stops at that
+// intersection (22nd & Cuming NE/NW/SE/SW — matched below via
+// GARAGE_STOP_PATTERN, since GTFS has no field for "this stop is a garage").
+// For every shape, this script checks whether any trip running it has a
+// garage stop as its FIRST or LAST stop_times row — first/last only, so a
+// route that legitimately drives past the garage mid-route without starting
+// or ending there is never excluded on that basis. Per route-direction, if
+// at least one shape does NOT terminate at the garage, the candidate pool is
+// restricted to those, and the garage-terminating shapes are dropped before
+// anything else runs.
 //
-// Picking the plain MOST-USED shape is not the fix either — it fails in the
-// opposite direction. Route 13 direction 0's most-used shape is a 10,151 m
-// short-turn that a plurality of weekday trips happen to run; the real
-// full-length pattern (21,605 m, run by a smaller but still substantial share
-// of trips) is the route, not an anomaly, and most-used would visually
-// amputate it down to the short-turn.
+// This is a much stronger signal than trip share alone, which used to be the
+// only test here and still let deadheads through when they happened to clear
+// the threshold. Route 92 direction 0's correct shape (Westroads TC ->
+// Village Pointe, 12,808 m) is used by 9 of 11 trips (82%); its garage-run
+// shape (22nd & Cuming -> Village Pointe, 35,104 m) still cleared a 15%
+// trip-share cutoff at 2 of 11 trips (18%) and, being longer, used to win on
+// length. Trip share alone can't rule that out — the garage stop is
+// genuinely boardable as far as the feed is concerned — but knowing WHERE
+// the shape starts or ends can.
 //
-// The rule below: among the shapes used by at least MIN_TRIP_SHARE of that
-// route-direction's trips, pick the longest by cumulative distance. 15% is a
-// judgement call, not a derived constant — high enough that a 1-5%-of-trips
-// deadhead never qualifies, low enough that a genuine peak-only or
-// weekend-only pattern (which can legitimately be a small minority of trips)
-// still does. If NO shape reaches the threshold — possible when a direction
-// has several roughly-equally-rare variants and none individually clears
-// 15% — fall back to the single most-used shape and warn, so that case is
-// visible rather than silently wrong.
+// Checking every route-direction in this feed against the garage stops
+// separates cleanly: 38 of 48 have a mix of garage-terminating and
+// non-terminating shapes (deadheads are separable and get filtered out here);
+// 10 of 48 have EVERY shape terminating at the garage (routes 93, 94, 95, 97,
+// 120, both directions — 1-4 trip/day expresses where the real pattern can't
+// be told apart from a deadhead by this test); 0 have no garage-terminating
+// shape at all. For those 10 unseparable route-directions there's nothing to
+// filter, so the full candidate pool is kept and a console.warn names the
+// route and direction; the shape ultimately picked for them is flagged
+// `garageTerminal: true` in the output data so the maintainer can audit
+// those specific routes by hand against Metro's published system map instead
+// of trusting the geometry blindly.
+//
+// SECONDARY RULE — trip share, applied WITHIN whatever pool the garage test
+// above leaves. Picking the plain MOST-USED shape is not sufficient by
+// itself — it fails in the opposite direction from deadheads. Route 13
+// direction 0's most-used shape is a 10,151 m short-turn that a plurality of
+// weekday trips happen to run; the real full-length pattern (21,605 m, run
+// by a smaller but still substantial share of trips) is the route, not an
+// anomaly, and most-used would visually amputate it down to the short-turn.
+// So: among the shapes in the (garage-filtered) pool used by at least
+// MIN_TRIP_SHARE of that route-direction's trips, pick the longest by
+// cumulative distance. 15% is a judgement call, not a derived constant —
+// high enough that a rare leftover variant never qualifies, low enough that
+// a genuine peak-only or weekend-only pattern (which can legitimately be a
+// small minority of trips) still does. If NO shape in the pool reaches the
+// threshold, fall back to the single most-used shape in the pool and warn,
+// so that case is visible rather than silently wrong.
+//
+// tripShare and tripCount in the output are always computed against ALL
+// trips in that route-direction, not just the filtered pool, so the figures
+// stay comparable across routes regardless of how much got filtered out.
 const MIN_TRIP_SHARE = 0.15;
+
+// Metro's garage address (2222 Cuming St) is external domain knowledge GTFS
+// has no field for. This regex + assertion is how that knowledge gets
+// encoded: if a future feed renames these stops, this throws instead of
+// silently reverting to the old bad behavior (freeway deadheads winning on
+// length again).
+const GARAGE_STOP_PATTERN = /22(nd)?\s*&\s*Cuming/i;
+const garageStopIds = new Set(stopsRaw.filter((s) => GARAGE_STOP_PATTERN.test(s.stop_name)).map((s) => s.stop_id));
+if (garageStopIds.size === 0) {
+  throw new Error(
+    `No stop in stops.txt matched the garage-stop pattern ${GARAGE_STOP_PATTERN} (expected the four "22nd & ` +
+      `Cuming" stops at Metro's garage, 2222 Cuming St). Without these, deadhead trips can no longer be told ` +
+      `apart from real route patterns by garage terminus. Check whether Metro renamed these stops in the feed ` +
+      `and update GARAGE_STOP_PATTERN accordingly.`
+  );
+}
+
+// For each active trip, find its first and last stop (by stop_sequence).
+// Scoped to active trips only — stop_times.txt has ~300K rows across every
+// service period in the feed, but only the active period's trips ever reach
+// pickShape().
+const activeTripIds = new Set(activeTrips.map((t) => t.trip_id));
+const tripEnds = new Map(); // trip_id -> { minSeq, minStopId, maxSeq, maxStopId }
+for (const row of stopTimesRaw) {
+  if (!activeTripIds.has(row.trip_id)) continue;
+  const seq = Number(row.stop_sequence);
+  let ends = tripEnds.get(row.trip_id);
+  if (!ends) {
+    ends = { minSeq: Infinity, minStopId: null, maxSeq: -Infinity, maxStopId: null };
+    tripEnds.set(row.trip_id, ends);
+  }
+  if (seq < ends.minSeq) {
+    ends.minSeq = seq;
+    ends.minStopId = row.stop_id;
+  }
+  if (seq > ends.maxSeq) {
+    ends.maxSeq = seq;
+    ends.maxStopId = row.stop_id;
+  }
+}
+
+// A shape is "garage-terminating" if ANY trip running it starts or ends at a
+// garage stop. Checked via trips rather than shape geometry directly, since
+// shapes.txt carries no notion of which stops sit along a shape.
+const garageTerminatingShapeIds = new Set();
+for (const t of activeTrips) {
+  const ends = tripEnds.get(t.trip_id);
+  if (!ends) continue; // no stop_times rows for this trip; nothing to check
+  if (garageStopIds.has(ends.minStopId) || garageStopIds.has(ends.maxStopId)) {
+    garageTerminatingShapeIds.add(t.shape_id);
+  }
+}
 
 const shapesRaw = readCsv("shapes.txt");
 const shapePointsById = new Map();
@@ -347,22 +428,43 @@ function pickShape(label, shapeCounts) {
   for (const [shapeId, count] of shapeCounts) {
     const points = shapePointsById.get(shapeId);
     if (!points || points.length < 2) continue;
-    candidates.push({ shapeId, points, count, share: count / totalTrips, lengthMeters: shapeLengthMeters(points) });
+    candidates.push({
+      shapeId,
+      points,
+      count,
+      share: count / totalTrips,
+      lengthMeters: shapeLengthMeters(points),
+      garageTerminal: garageTerminatingShapeIds.has(shapeId),
+    });
   }
   if (candidates.length === 0) throw new Error(`No usable shape found among candidates for ${label}: ${[...shapeCounts.keys()].join(", ")}`);
 
-  let pool = candidates.filter((c) => c.share >= MIN_TRIP_SHARE);
+  // Primary filter: drop shapes that terminate at the garage. If that leaves
+  // nothing (the 10 unseparable route-directions), keep the full pool and
+  // say so — there's no way to tell the real pattern from a deadhead here.
+  let pool = candidates.filter((c) => !c.garageTerminal);
   if (pool.length === 0) {
-    const mostUsed = candidates.reduce((best, c) => (c.count > best.count ? c : best));
+    console.warn(
+      `WARNING: ${label} — every candidate shape terminates at a garage stop; the real pattern can't be ` +
+        `distinguished from a deadhead by garage terminus here. Keeping the full candidate pool.`
+    );
+    pool = candidates;
+  }
+
+  // Secondary filter: within that pool, require at least MIN_TRIP_SHARE of
+  // ALL trips in the direction, then take the longest survivor.
+  let shareFiltered = pool.filter((c) => c.share >= MIN_TRIP_SHARE);
+  if (shareFiltered.length === 0) {
+    const mostUsed = pool.reduce((best, c) => (c.count > best.count ? c : best));
     console.warn(
       `WARNING: ${label} has no shape reaching ${(MIN_TRIP_SHARE * 100).toFixed(0)}% trip share ` +
         `(most-used shape ${mostUsed.shapeId} is only ${(mostUsed.share * 100).toFixed(1)}% of ${totalTrips} trips). ` +
         `Falling back to the single most-used shape.`
     );
-    pool = [mostUsed];
+    shareFiltered = [mostUsed];
   }
-  const best = pool.reduce((a, b) => (b.lengthMeters > a.lengthMeters ? b : a));
-  return { shapeId: best.shapeId, points: best.points, lengthMeters: best.lengthMeters, tripShare: best.share, tripCount: best.count };
+  const best = shareFiltered.reduce((a, b) => (b.lengthMeters > a.lengthMeters ? b : a));
+  return { shapeId: best.shapeId, points: best.points, lengthMeters: best.lengthMeters, tripShare: best.share, tripCount: best.count, garageTerminal: best.garageTerminal };
 }
 
 // Keep BOTH directions where they exist. Most routes trace the same streets
@@ -377,8 +479,8 @@ for (const id of expectedIds) {
     const key = `${info.routeId}|${directionId}`;
     const shapeCounts = shapeTripCountsByRouteDirection.get(key);
     if (!shapeCounts) continue;
-    const { shapeId, points, lengthMeters, tripShare, tripCount } = pickShape(`route ${id} direction ${directionId}`, shapeCounts);
-    selected.push({ id, shortName: info.shortName, route: info.route, directionId, shapeId, points, lengthMeters, tripShare, tripCount });
+    const { shapeId, points, lengthMeters, tripShare, tripCount, garageTerminal } = pickShape(`route ${id} direction ${directionId}`, shapeCounts);
+    selected.push({ id, shortName: info.shortName, route: info.route, directionId, shapeId, points, lengthMeters, tripShare, tripCount, garageTerminal });
   }
 }
 
@@ -510,8 +612,14 @@ for (const s of selected) {
     maxRoundedDeviationAt = { id: s.id, directionId: s.directionId, shapeId: s.shapeId };
   }
 
+  const pathEntry = { directionId: s.directionId, shapeId: s.shapeId, d, tripShare: Number(s.tripShare.toFixed(3)), tripCount: s.tripCount };
+  // Only ever written as `true` — the 10 route-directions where every shape
+  // terminates at the garage and the data genuinely cannot resolve which
+  // pattern is real (see the section-4 comment). Omitted, not `false`,
+  // everywhere else, so this marks exactly the paths worth a manual audit.
+  if (s.garageTerminal) pathEntry.garageTerminal = true;
   if (!pathsByRouteId.has(s.id)) pathsByRouteId.set(s.id, []);
-  pathsByRouteId.get(s.id).push({ directionId: s.directionId, shapeId: s.shapeId, d, tripShare: Number(s.tripShare.toFixed(3)), tripCount: s.tripCount });
+  pathsByRouteId.get(s.id).push(pathEntry);
 }
 
 // ---------------------------------------------------------------------------
