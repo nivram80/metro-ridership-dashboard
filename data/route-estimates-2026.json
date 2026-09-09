@@ -14,157 +14,157 @@
     {
       "id": "orbt",
       "name": "ORBT",
-      "color": "#E87722",
+      "color": "#E77119",
       "estimated": true
     },
     {
       "id": "3",
       "name": "Route 3",
-      "color": "#59CBE8",
+      "color": "#007DBA",
       "estimated": true
     },
     {
       "id": "4",
       "name": "Route 4",
-      "color": "#F2A900",
+      "color": "#752B90",
       "estimated": true
     },
     {
       "id": "5",
       "name": "Route 5",
-      "color": "#707070",
+      "color": "#C88503",
       "estimated": true
     },
     {
       "id": "8",
       "name": "Route 8",
-      "color": "#053955",
+      "color": "#00747B",
       "estimated": true
     },
     {
       "id": "11",
       "name": "Route 11",
-      "color": "#CF594A",
+      "color": "#9053A1",
       "estimated": true
     },
     {
       "id": "13",
       "name": "Route 13",
-      "color": "#7FBE39",
+      "color": "#076C2B",
       "estimated": true
     },
     {
       "id": "14",
       "name": "Route 14",
-      "color": "#00B398",
+      "color": "#F05674",
       "estimated": true
     },
     {
       "id": "15",
       "name": "Route 15",
-      "color": "#053955",
+      "color": "#243C96",
       "estimated": true
     },
     {
       "id": "18",
       "name": "Route 18",
-      "color": "#007DBA",
+      "color": "#A9112C",
       "estimated": true
     },
     {
       "id": "24",
       "name": "Route 24",
-      "color": "#00B398",
+      "color": "#ED1C24",
       "estimated": true
     },
     {
       "id": "26",
       "name": "Route 26",
-      "color": "#707070",
+      "color": "#808285",
       "estimated": true
     },
     {
       "id": "30",
       "name": "Route 30",
-      "color": "#CF594A",
+      "color": "#6F9E00",
       "estimated": true
     },
     {
       "id": "35",
       "name": "Route 35",
-      "color": "#F2A900",
+      "color": "#B6006D",
       "estimated": true
     },
     {
       "id": "36",
       "name": "Route 36",
-      "color": "#59CBE8",
+      "color": "#009AC0",
       "estimated": true
     },
     {
       "id": "41",
       "name": "Route 41",
-      "color": "#7FBE39",
+      "color": "#007DBA",
       "estimated": true
     },
     {
       "id": "43",
       "name": "Route 43",
-      "color": "#CF594A",
+      "color": "#A68E00",
       "estimated": true
     },
     {
       "id": "55",
       "name": "Route 55",
-      "color": "#707070",
+      "color": "#EC008C",
       "estimated": true
     },
     {
       "id": "92",
       "name": "Route 92",
-      "color": "#E87722",
+      "color": "#231F20",
       "estimated": true
     },
     {
       "id": "93",
       "name": "Route 93",
-      "color": "#59CBE8",
+      "color": "#231F20",
       "estimated": true
     },
     {
       "id": "94",
       "name": "Route 94",
-      "color": "#00B398",
+      "color": "#231F20",
       "estimated": true
     },
     {
       "id": "95",
       "name": "Route 95",
-      "color": "#F2A900",
+      "color": "#231F20",
       "estimated": true
     },
     {
       "id": "97",
       "name": "Route 97",
-      "color": "#053955",
+      "color": "#231F20",
       "estimated": true
     },
     {
       "id": "106",
       "name": "Route 106",
-      "color": "#007DBA",
+      "color": "#009F87",
       "estimated": true
     },
     {
       "id": "120",
       "name": "Route 120",
-      "color": "#7FBE39",
+      "color": "#009F87",
       "estimated": true
     },
     {
       "id": "200",
       "name": "Route 200",
-      "color": "#CF594A",
+      "color": "#00A14B",
       "estimated": true
     }
   ],

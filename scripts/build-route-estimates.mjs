@@ -12,40 +12,64 @@
 //
 // Run: node scripts/build-route-estimates.mjs
 
-import { writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Route colors are read from data/routes-geo.json rather than hardcoded here.
+// Those are Metro's own route_color values out of the GTFS feed, darkened where
+// needed to clear a 3:1 contrast ratio on white (see build-routes.mjs).
+//
+// One palette, three places: a route's chip, its chart series, and its line on
+// the map are guaranteed to be the same color. The previous hand-picked palette
+// reused 9 colors across all 26 routes, so multi-selecting estimated routes drew
+// two identical red lines on the map (11 and 200, for instance).
+//
+// This makes build-routes.mjs a prerequisite: run it first if data/routes-geo.json
+// is missing.
+const GEO_PATH = join(__dirname, "..", "data", "routes-geo.json");
+if (!existsSync(GEO_PATH)) {
+  console.error(`Missing ${GEO_PATH} — run "node scripts/build-routes.mjs" first.`);
+  process.exit(1);
+}
+const geoColors = new Map(
+  JSON.parse(readFileSync(GEO_PATH, "utf8")).routes.map((r) => [r.id, r.displayColor]),
+);
+
 const ROUTES = [
-  { id: "orbt", name: "ORBT", color: "#E87722" },
-  { id: "3", name: "Route 3", color: "#59CBE8" },
-  { id: "4", name: "Route 4", color: "#F2A900" },
-  { id: "5", name: "Route 5", color: "#707070" },
-  { id: "8", name: "Route 8", color: "#053955" },
-  { id: "11", name: "Route 11", color: "#CF594A" },
-  { id: "13", name: "Route 13", color: "#7FBE39" },
-  { id: "14", name: "Route 14", color: "#00B398" },
-  { id: "15", name: "Route 15", color: "#053955" },
-  { id: "18", name: "Route 18", color: "#007DBA" },
-  { id: "24", name: "Route 24", color: "#00B398" },
-  { id: "26", name: "Route 26", color: "#707070" },
-  { id: "30", name: "Route 30", color: "#CF594A" },
-  { id: "35", name: "Route 35", color: "#F2A900" },
-  { id: "36", name: "Route 36", color: "#59CBE8" },
-  { id: "41", name: "Route 41", color: "#7FBE39" },
-  { id: "43", name: "Route 43", color: "#CF594A" },
-  { id: "55", name: "Route 55", color: "#707070" },
-  { id: "92", name: "Route 92", color: "#E87722" },
-  { id: "93", name: "Route 93", color: "#59CBE8" },
-  { id: "94", name: "Route 94", color: "#00B398" },
-  { id: "95", name: "Route 95", color: "#F2A900" },
-  { id: "97", name: "Route 97", color: "#053955" },
-  { id: "106", name: "Route 106", color: "#007DBA" },
-  { id: "120", name: "Route 120", color: "#7FBE39" },
-  { id: "200", name: "Route 200", color: "#CF594A" },
-];
+  { id: "orbt", name: "ORBT" },
+  { id: "3", name: "Route 3" },
+  { id: "4", name: "Route 4" },
+  { id: "5", name: "Route 5" },
+  { id: "8", name: "Route 8" },
+  { id: "11", name: "Route 11" },
+  { id: "13", name: "Route 13" },
+  { id: "14", name: "Route 14" },
+  { id: "15", name: "Route 15" },
+  { id: "18", name: "Route 18" },
+  { id: "24", name: "Route 24" },
+  { id: "26", name: "Route 26" },
+  { id: "30", name: "Route 30" },
+  { id: "35", name: "Route 35" },
+  { id: "36", name: "Route 36" },
+  { id: "41", name: "Route 41" },
+  { id: "43", name: "Route 43" },
+  { id: "55", name: "Route 55" },
+  { id: "92", name: "Route 92" },
+  { id: "93", name: "Route 93" },
+  { id: "94", name: "Route 94" },
+  { id: "95", name: "Route 95" },
+  { id: "97", name: "Route 97" },
+  { id: "106", name: "Route 106" },
+  { id: "120", name: "Route 120" },
+  { id: "200", name: "Route 200" },
+].map((route) => {
+  const color = geoColors.get(route.id);
+  if (!color) throw new Error(`No geometry color for route "${route.id}" in ${GEO_PATH}`);
+  return { ...route, color };
+});
 
 const OFFICIAL_TOTALS = {
   1: 268640,

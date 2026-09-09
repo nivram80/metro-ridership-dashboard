@@ -13,3 +13,10 @@ package-lock.json
 # Local server / scratch
 *.log
 .cache/
+
+# GTFS source feed (input to scripts/build-routes.mjs, not deployed)
+gtfs/
+*.zip
+
+# Cached OpenStreetMap Overpass responses (input to scripts/build-basemap.mjs)
+osm/

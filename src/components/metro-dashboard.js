@@ -5,6 +5,7 @@ import "./dashboard-controls.js";
 import "./stat-cards.js";
 import "./ridership-chart.js";
 import "./ridership-table.js";
+import "./route-map.js";
 
 // ------------------------------------------------------------------
 // <metro-dashboard> — application root. Owns the dataset and the
@@ -258,6 +259,14 @@ export class MetroDashboard extends LitElement {
               accessibleLabel=${`${this._chartTitle()}. ${this._chartMeta(agg)}. Exact values are available in the Table display.`}>
             </ridership-chart>
           `}
+
+        </section>
+
+        <section class="panel">
+          <route-map
+            .routes=${this._data.routes}
+            .selectedIds=${this._state.routeIds}>
+          </route-map>
         </section>
 
         <footer class="foot">
