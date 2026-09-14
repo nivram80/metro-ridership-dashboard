@@ -1,11 +1,11 @@
 {
   "title": "Omaha Metro — Fixed-Route Passenger Trips",
   "source": {
-    "name": "Metro August 2026 Board Packet",
-    "url": "https://www.ometro.com/august-2026-board-packet/",
+    "name": "Metro September 2026 Board Packet",
+    "url": "https://www.ometro.com/september-2026-board-packet/",
     "note": "Monthly system-wide fixed-route trips read from the Board Packet ridership chart.",
-    "asOf": "2026-07",
-    "dataThrough": "July 2026"
+    "asOf": "2026-08",
+    "dataThrough": "August 2026"
   },
   "routes": [
     {
@@ -560,6 +560,12 @@
       "year": 2026,
       "month": 7,
       "trips": 287348
+    },
+    {
+      "routeId": "system",
+      "year": 2026,
+      "month": 8,
+      "trips": 304748
     }
   ]
 }
