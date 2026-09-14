@@ -1,11 +1,12 @@
 // Generates data/route-estimates-2026.json from route-level estimates read from
 // Metro's "Ridership by Route" bar charts.
 //
-// Sources: months 1-5 re-measured from the Amended June 2026 Board Packet,
-//            PDF pages 101-103 (one chart per month, two charts per page);
-//          month 6 from the July 2026 Updated Board Packet, PDF page 31;
-//          month 7 from the August 2026 Board Packet, PDF page 116;
+// Sources: months 1-5 from the Amended June 2026 Board Packet, PDF pp.101-103;
+//          months 6-7 from the July 2026 and August 2026 Board Packets,
+//            PDF page 31 and page 116;
 //          month 8 from the September 2026 Board Packet, PDF page 31.
+// All eight months were measured with the same pass, so the series has no
+// methodological seam.
 //
 // Months 1-5 were re-measured because the original pass read several small
 // bars as zero - routes 92, 93, 95 and 120 had zero-trip months, which is not
@@ -272,32 +273,32 @@ const ESTIMATES = {
     "200": { weekday: 1000, saturday: 200, sunday: 200 },
   },
   7: {
-    orbt: { weekday: 42000, saturday: 4000, sunday: 3800 },
-    "3": { weekday: 16800, saturday: 1100, sunday: 1100 },
-    "4": { weekday: 26700, saturday: 2000, sunday: 2000 },
-    "5": { weekday: 5100, saturday: 300, sunday: 0 },
-    "8": { weekday: 4300, saturday: 300, sunday: 0 },
-    "11": { weekday: 11600, saturday: 800, sunday: 800 },
-    "13": { weekday: 13600, saturday: 1100, sunday: 1100 },
+    orbt: { weekday: 41600, saturday: 4000, sunday: 3800 },
+    "3": { weekday: 16600, saturday: 1200, sunday: 1200 },
+    "4": { weekday: 26400, saturday: 2000, sunday: 2000 },
+    "5": { weekday: 5100, saturday: 400, sunday: 0 },
+    "8": { weekday: 4300, saturday: 400, sunday: 0 },
+    "11": { weekday: 11500, saturday: 900, sunday: 900 },
+    "13": { weekday: 13500, saturday: 1100, sunday: 1200 },
     "14": { weekday: 6500, saturday: 600, sunday: 0 },
-    "15": { weekday: 10500, saturday: 900, sunday: 1000 },
-    "18": { weekday: 42800, saturday: 4400, sunday: 3500 },
-    "24": { weekday: 24500, saturday: 1900, sunday: 1900 },
-    "26": { weekday: 3300, saturday: 100, sunday: 200 },
-    "30": { weekday: 12900, saturday: 1100, sunday: 1100 },
-    "35": { weekday: 4700, saturday: 200, sunday: 300 },
-    "36": { weekday: 2300, saturday: 100, sunday: 0 },
+    "15": { weekday: 10400, saturday: 900, sunday: 1000 },
+    "18": { weekday: 42400, saturday: 4400, sunday: 3500 },
+    "24": { weekday: 24200, saturday: 1900, sunday: 2000 },
+    "26": { weekday: 3300, saturday: 200, sunday: 200 },
+    "30": { weekday: 12800, saturday: 1100, sunday: 1200 },
+    "35": { weekday: 4700, saturday: 300, sunday: 300 },
+    "36": { weekday: 2400, saturday: 200, sunday: 100 },
     "41": { weekday: 6300, saturday: 0, sunday: 0 },
     "43": { weekday: 6300, saturday: 600, sunday: 0 },
     "55": { weekday: 4500, saturday: 300, sunday: 0 },
     "92": { weekday: 500, saturday: 0, sunday: 0 },
-    "93": { weekday: 300, saturday: 0, sunday: 0 },
+    "93": { weekday: 400, saturday: 0, sunday: 0 },
     "94": { weekday: 500, saturday: 0, sunday: 0 },
-    "95": { weekday: 400, saturday: 0, sunday: 0 },
+    "95": { weekday: 500, saturday: 0, sunday: 0 },
     "97": { weekday: 800, saturday: 0, sunday: 0 },
-    "106": { weekday: 2500, saturday: 0, sunday: 0 },
-    "120": { weekday: 300, saturday: 0, sunday: 0 },
-    "200": { weekday: 400, saturday: 200, sunday: 100 },
+    "106": { weekday: 2600, saturday: 0, sunday: 0 },
+    "120": { weekday: 400, saturday: 0, sunday: 0 },
+    "200": { weekday: 500, saturday: 200, sunday: 200 },
   },
   8: {
     orbt: { weekday: 42100, saturday: 7400, sunday: 4800 },

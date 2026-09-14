@@ -1733,9 +1733,9 @@
       "routeId": "orbt",
       "year": 2026,
       "month": 7,
-      "trips": 49800,
+      "trips": 49400,
       "estimated": true,
-      "weekdayTrips": 42000,
+      "weekdayTrips": 41600,
       "saturdayTrips": 4000,
       "sundayTrips": 3800
     },
@@ -1745,17 +1745,17 @@
       "month": 7,
       "trips": 19000,
       "estimated": true,
-      "weekdayTrips": 16800,
-      "saturdayTrips": 1100,
-      "sundayTrips": 1100
+      "weekdayTrips": 16600,
+      "saturdayTrips": 1200,
+      "sundayTrips": 1200
     },
     {
       "routeId": "4",
       "year": 2026,
       "month": 7,
-      "trips": 30700,
+      "trips": 30400,
       "estimated": true,
-      "weekdayTrips": 26700,
+      "weekdayTrips": 26400,
       "saturdayTrips": 2000,
       "sundayTrips": 2000
     },
@@ -1763,31 +1763,31 @@
       "routeId": "5",
       "year": 2026,
       "month": 7,
-      "trips": 5400,
+      "trips": 5500,
       "estimated": true,
       "weekdayTrips": 5100,
-      "saturdayTrips": 300,
+      "saturdayTrips": 400,
       "sundayTrips": 0
     },
     {
       "routeId": "8",
       "year": 2026,
       "month": 7,
-      "trips": 4600,
+      "trips": 4700,
       "estimated": true,
       "weekdayTrips": 4300,
-      "saturdayTrips": 300,
+      "saturdayTrips": 400,
       "sundayTrips": 0
     },
     {
       "routeId": "11",
       "year": 2026,
       "month": 7,
-      "trips": 13200,
+      "trips": 13300,
       "estimated": true,
-      "weekdayTrips": 11600,
-      "saturdayTrips": 800,
-      "sundayTrips": 800
+      "weekdayTrips": 11500,
+      "saturdayTrips": 900,
+      "sundayTrips": 900
     },
     {
       "routeId": "13",
@@ -1795,9 +1795,9 @@
       "month": 7,
       "trips": 15800,
       "estimated": true,
-      "weekdayTrips": 13600,
+      "weekdayTrips": 13500,
       "saturdayTrips": 1100,
-      "sundayTrips": 1100
+      "sundayTrips": 1200
     },
     {
       "routeId": "14",
@@ -1813,9 +1813,9 @@
       "routeId": "15",
       "year": 2026,
       "month": 7,
-      "trips": 12400,
+      "trips": 12300,
       "estimated": true,
-      "weekdayTrips": 10500,
+      "weekdayTrips": 10400,
       "saturdayTrips": 900,
       "sundayTrips": 1000
     },
@@ -1823,9 +1823,9 @@
       "routeId": "18",
       "year": 2026,
       "month": 7,
-      "trips": 50700,
+      "trips": 50300,
       "estimated": true,
-      "weekdayTrips": 42800,
+      "weekdayTrips": 42400,
       "saturdayTrips": 4400,
       "sundayTrips": 3500
     },
@@ -1833,20 +1833,20 @@
       "routeId": "24",
       "year": 2026,
       "month": 7,
-      "trips": 28300,
+      "trips": 28100,
       "estimated": true,
-      "weekdayTrips": 24500,
+      "weekdayTrips": 24200,
       "saturdayTrips": 1900,
-      "sundayTrips": 1900
+      "sundayTrips": 2000
     },
     {
       "routeId": "26",
       "year": 2026,
       "month": 7,
-      "trips": 3600,
+      "trips": 3700,
       "estimated": true,
       "weekdayTrips": 3300,
-      "saturdayTrips": 100,
+      "saturdayTrips": 200,
       "sundayTrips": 200
     },
     {
@@ -1855,29 +1855,29 @@
       "month": 7,
       "trips": 15100,
       "estimated": true,
-      "weekdayTrips": 12900,
+      "weekdayTrips": 12800,
       "saturdayTrips": 1100,
-      "sundayTrips": 1100
+      "sundayTrips": 1200
     },
     {
       "routeId": "35",
       "year": 2026,
       "month": 7,
-      "trips": 5200,
+      "trips": 5300,
       "estimated": true,
       "weekdayTrips": 4700,
-      "saturdayTrips": 200,
+      "saturdayTrips": 300,
       "sundayTrips": 300
     },
     {
       "routeId": "36",
       "year": 2026,
       "month": 7,
-      "trips": 2400,
+      "trips": 2700,
       "estimated": true,
-      "weekdayTrips": 2300,
-      "saturdayTrips": 100,
-      "sundayTrips": 0
+      "weekdayTrips": 2400,
+      "saturdayTrips": 200,
+      "sundayTrips": 100
     },
     {
       "routeId": "41",
@@ -1923,9 +1923,9 @@
       "routeId": "93",
       "year": 2026,
       "month": 7,
-      "trips": 300,
+      "trips": 400,
       "estimated": true,
-      "weekdayTrips": 300,
+      "weekdayTrips": 400,
       "saturdayTrips": 0,
       "sundayTrips": 0
     },
@@ -1943,9 +1943,9 @@
       "routeId": "95",
       "year": 2026,
       "month": 7,
-      "trips": 400,
+      "trips": 500,
       "estimated": true,
-      "weekdayTrips": 400,
+      "weekdayTrips": 500,
       "saturdayTrips": 0,
       "sundayTrips": 0
     },
@@ -1963,9 +1963,9 @@
       "routeId": "106",
       "year": 2026,
       "month": 7,
-      "trips": 2500,
+      "trips": 2600,
       "estimated": true,
-      "weekdayTrips": 2500,
+      "weekdayTrips": 2600,
       "saturdayTrips": 0,
       "sundayTrips": 0
     },
@@ -1973,9 +1973,9 @@
       "routeId": "120",
       "year": 2026,
       "month": 7,
-      "trips": 300,
+      "trips": 400,
       "estimated": true,
-      "weekdayTrips": 300,
+      "weekdayTrips": 400,
       "saturdayTrips": 0,
       "sundayTrips": 0
     },
@@ -1983,11 +1983,11 @@
       "routeId": "200",
       "year": 2026,
       "month": 7,
-      "trips": 700,
+      "trips": 900,
       "estimated": true,
-      "weekdayTrips": 400,
+      "weekdayTrips": 500,
       "saturdayTrips": 200,
-      "sundayTrips": 100
+      "sundayTrips": 200
     },
     {
       "routeId": "orbt",
