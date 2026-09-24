@@ -279,7 +279,7 @@ export class MetroDashboard extends LitElement {
           </p>
           ${this._data.estimateSource ? html`
             <p class="foot-note">
-              Route-level figures are estimates—not official Metro route totals—and are rounded to the nearest 100 from bar heights on ${this._data.estimateSource.pages || "the cited pages"} of
+              Route-level figures are estimates—not official Metro route totals—and are rounded to the nearest 100 from bar heights published in
               <a href=${this._data.estimateSource.url} target="_blank" rel="noopener">${this._data.estimateSource.name}</a>.
             </p>` : nothing}
           <p class="foot-attr">
