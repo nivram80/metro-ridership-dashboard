@@ -282,6 +282,10 @@ export class MetroDashboard extends LitElement {
               Route-level figures are estimates—not official Metro route totals—and are rounded to the nearest 100 from bar heights on ${this._data.estimateSource.pages || "the cited pages"} of
               <a href=${this._data.estimateSource.url} target="_blank" rel="noopener">${this._data.estimateSource.name}</a>.
             </p>` : nothing}
+          <p class="foot-attr">
+            Built by <a href="https://www.linkedin.com/in/nivram80" target="_blank" rel="noopener">Todd Nichols</a>.
+            An independent prototype, not an official Metro product.
+          </p>
         </footer>
       </main>
     `;
@@ -428,6 +432,14 @@ export class MetroDashboard extends LitElement {
     .foot { margin: 22px 0 48px; color: var(--muted, #5b6b75); font-size: 13px; }
     .foot a { font-weight: 700; }
     .foot-note { margin: 6px 0 0; color: var(--muted-2,#8a97a0); font-size: 12.5px; }
+    /* Separated from the source citations above it: those describe where the
+       data came from, this describes who made the page. Running them together
+       reads as though Metro published it. */
+    .foot-attr {
+      margin: 14px 0 0; padding-top: 12px;
+      border-top: 1px solid var(--line-2, #eef1f3);
+      color: var(--muted-2,#8a97a0); font-size: 12.5px;
+    }
 
     /* States */
     .state { max-width: var(--maxw); margin: 0 auto; padding: 80px 22px; text-align: center; color: var(--muted, #5b6b75); }

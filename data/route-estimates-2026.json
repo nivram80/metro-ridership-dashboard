@@ -2,12 +2,12 @@
   "title": "Omaha Metro — Estimated Route Passenger Trips",
   "estimated": true,
   "source": {
-    "name": "Metro (Omaha) July + August 2026 Board Packets — Ridership by Route charts",
-    "url": "https://www.ometro.com/august-2026-board-packet/",
+    "name": "Metro (Omaha) 2026 Board Packets — Ridership by Route charts",
+    "url": "https://www.ometro.com/september-2026-board-packet/",
     "note": "Approximate route-level trips estimated from bar heights on the monthly Ridership by Route charts; values rounded to the nearest 100.",
     "asOf": "2026-07",
     "dataThrough": "July 2026",
-    "pages": "July packet PDF page 31 (Jan-Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug)",
+    "pages": "June packet PDF pages 101-103 (Jan-May), July packet PDF page 31 (Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug)",
     "method": "Bar-height estimate calibrated to each chart axis and scaled to monthly system totals."
   },
   "routes": [
