@@ -5,9 +5,9 @@
     "name": "Metro's monthly Board Packets",
     "url": "https://www.ometro.com/board-of-directors/#board-agendas",
     "note": "Approximate route-level trips estimated from bar heights on the monthly Ridership by Route charts; values rounded to the nearest 100.",
-    "asOf": "2026-07",
-    "dataThrough": "July 2026",
-    "pages": "June packet PDF pages 101-103 (Jan-May), July packet PDF page 31 (Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug)",
+    "asOf": "2026-09",
+    "dataThrough": "September 2026",
+    "pages": "June packet PDF pages 101-103 (Jan-May), July packet PDF page 31 (Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug), October packet PDF page 112 (Sep)",
     "method": "Bar-height estimate calibrated to each chart axis and scaled to monthly system totals."
   },
   "routes": [
@@ -2246,6 +2246,266 @@
       "trips": 500,
       "estimated": true,
       "weekdayTrips": 500,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "orbt",
+      "year": 2026,
+      "month": 9,
+      "trips": 58600,
+      "estimated": true,
+      "weekdayTrips": 48900,
+      "saturdayTrips": 5900,
+      "sundayTrips": 3800
+    },
+    {
+      "routeId": "3",
+      "year": 2026,
+      "month": 9,
+      "trips": 19300,
+      "estimated": true,
+      "weekdayTrips": 16600,
+      "saturdayTrips": 1500,
+      "sundayTrips": 1200
+    },
+    {
+      "routeId": "4",
+      "year": 2026,
+      "month": 9,
+      "trips": 35700,
+      "estimated": true,
+      "weekdayTrips": 30500,
+      "saturdayTrips": 3000,
+      "sundayTrips": 2200
+    },
+    {
+      "routeId": "5",
+      "year": 2026,
+      "month": 9,
+      "trips": 8300,
+      "estimated": true,
+      "weekdayTrips": 7700,
+      "saturdayTrips": 600,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "8",
+      "year": 2026,
+      "month": 9,
+      "trips": 4500,
+      "estimated": true,
+      "weekdayTrips": 4000,
+      "saturdayTrips": 500,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "11",
+      "year": 2026,
+      "month": 9,
+      "trips": 10200,
+      "estimated": true,
+      "weekdayTrips": 8100,
+      "saturdayTrips": 1200,
+      "sundayTrips": 900
+    },
+    {
+      "routeId": "13",
+      "year": 2026,
+      "month": 9,
+      "trips": 16200,
+      "estimated": true,
+      "weekdayTrips": 13800,
+      "saturdayTrips": 1500,
+      "sundayTrips": 900
+    },
+    {
+      "routeId": "14",
+      "year": 2026,
+      "month": 9,
+      "trips": 8200,
+      "estimated": true,
+      "weekdayTrips": 7500,
+      "saturdayTrips": 700,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "15",
+      "year": 2026,
+      "month": 9,
+      "trips": 11300,
+      "estimated": true,
+      "weekdayTrips": 9000,
+      "saturdayTrips": 1300,
+      "sundayTrips": 1000
+    },
+    {
+      "routeId": "18",
+      "year": 2026,
+      "month": 9,
+      "trips": 59600,
+      "estimated": true,
+      "weekdayTrips": 49700,
+      "saturdayTrips": 5800,
+      "sundayTrips": 4100
+    },
+    {
+      "routeId": "24",
+      "year": 2026,
+      "month": 9,
+      "trips": 31200,
+      "estimated": true,
+      "weekdayTrips": 26900,
+      "saturdayTrips": 2700,
+      "sundayTrips": 1600
+    },
+    {
+      "routeId": "26",
+      "year": 2026,
+      "month": 9,
+      "trips": 7400,
+      "estimated": true,
+      "weekdayTrips": 6900,
+      "saturdayTrips": 300,
+      "sundayTrips": 200
+    },
+    {
+      "routeId": "30",
+      "year": 2026,
+      "month": 9,
+      "trips": 17600,
+      "estimated": true,
+      "weekdayTrips": 14300,
+      "saturdayTrips": 2000,
+      "sundayTrips": 1300
+    },
+    {
+      "routeId": "35",
+      "year": 2026,
+      "month": 9,
+      "trips": 7000,
+      "estimated": true,
+      "weekdayTrips": 6400,
+      "saturdayTrips": 400,
+      "sundayTrips": 200
+    },
+    {
+      "routeId": "36",
+      "year": 2026,
+      "month": 9,
+      "trips": 2400,
+      "estimated": true,
+      "weekdayTrips": 2200,
+      "saturdayTrips": 200,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "41",
+      "year": 2026,
+      "month": 9,
+      "trips": 5600,
+      "estimated": true,
+      "weekdayTrips": 5600,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "43",
+      "year": 2026,
+      "month": 9,
+      "trips": 6600,
+      "estimated": true,
+      "weekdayTrips": 5600,
+      "saturdayTrips": 1000,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "55",
+      "year": 2026,
+      "month": 9,
+      "trips": 4200,
+      "estimated": true,
+      "weekdayTrips": 3900,
+      "saturdayTrips": 300,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "92",
+      "year": 2026,
+      "month": 9,
+      "trips": 500,
+      "estimated": true,
+      "weekdayTrips": 500,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "93",
+      "year": 2026,
+      "month": 9,
+      "trips": 200,
+      "estimated": true,
+      "weekdayTrips": 200,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "94",
+      "year": 2026,
+      "month": 9,
+      "trips": 500,
+      "estimated": true,
+      "weekdayTrips": 500,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "95",
+      "year": 2026,
+      "month": 9,
+      "trips": 400,
+      "estimated": true,
+      "weekdayTrips": 400,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "97",
+      "year": 2026,
+      "month": 9,
+      "trips": 900,
+      "estimated": true,
+      "weekdayTrips": 900,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "106",
+      "year": 2026,
+      "month": 9,
+      "trips": 2700,
+      "estimated": true,
+      "weekdayTrips": 2700,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "120",
+      "year": 2026,
+      "month": 9,
+      "trips": 300,
+      "estimated": true,
+      "weekdayTrips": 300,
+      "saturdayTrips": 0,
+      "sundayTrips": 0
+    },
+    {
+      "routeId": "200",
+      "year": 2026,
+      "month": 9,
+      "trips": 400,
+      "estimated": true,
+      "weekdayTrips": 400,
       "saturdayTrips": 0,
       "sundayTrips": 0
     }

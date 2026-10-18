@@ -4,7 +4,8 @@
 // Sources: months 1-5 from the Amended June 2026 Board Packet, PDF pp.101-103;
 //          months 6-7 from the July 2026 and August 2026 Board Packets,
 //            PDF page 31 and page 116;
-//          month 8 from the September 2026 Board Packet, PDF page 31.
+//          month 8 from the September 2026 Board Packet, PDF page 31;
+//          month 9 from the October 2026 Board Packet, PDF page 112.
 // All eight months were measured with the same pass, so the series has no
 // methodological seam.
 //
@@ -100,6 +101,7 @@ const OFFICIAL_TOTALS = {
   6: 319644,
   7: 287348,
   8: 304748,
+  9: 319533,
 };
 
 // Estimated monthly passenger trips by route and service-day category.
@@ -328,6 +330,34 @@ const ESTIMATES = {
     "120": { weekday: 200, saturday: 0, sunday: 0 },
     "200": { weekday: 500, saturday: 0, sunday: 0 },
   },
+  9: {
+    orbt: { weekday: 48900, saturday: 5900, sunday: 3800 },
+    "3": { weekday: 16600, saturday: 1500, sunday: 1200 },
+    "4": { weekday: 30500, saturday: 3000, sunday: 2200 },
+    "5": { weekday: 7700, saturday: 600, sunday: 0 },
+    "8": { weekday: 4000, saturday: 500, sunday: 0 },
+    "11": { weekday: 8100, saturday: 1200, sunday: 900 },
+    "13": { weekday: 13800, saturday: 1500, sunday: 900 },
+    "14": { weekday: 7500, saturday: 700, sunday: 0 },
+    "15": { weekday: 9000, saturday: 1300, sunday: 1000 },
+    "18": { weekday: 49700, saturday: 5800, sunday: 4100 },
+    "24": { weekday: 26900, saturday: 2700, sunday: 1600 },
+    "26": { weekday: 6900, saturday: 300, sunday: 200 },
+    "30": { weekday: 14300, saturday: 2000, sunday: 1300 },
+    "35": { weekday: 6400, saturday: 400, sunday: 200 },
+    "36": { weekday: 2200, saturday: 200, sunday: 0 },
+    "41": { weekday: 5600, saturday: 0, sunday: 0 },
+    "43": { weekday: 5600, saturday: 1000, sunday: 0 },
+    "55": { weekday: 3900, saturday: 300, sunday: 0 },
+    "92": { weekday: 500, saturday: 0, sunday: 0 },
+    "93": { weekday: 200, saturday: 0, sunday: 0 },
+    "94": { weekday: 500, saturday: 0, sunday: 0 },
+    "95": { weekday: 400, saturday: 0, sunday: 0 },
+    "97": { weekday: 900, saturday: 0, sunday: 0 },
+    "106": { weekday: 2700, saturday: 0, sunday: 0 },
+    "120": { weekday: 300, saturday: 0, sunday: 0 },
+    "200": { weekday: 400, saturday: 0, sunday: 0 },
+  },
 };
 
 const records = [];
@@ -364,13 +394,13 @@ const data = {
     name: "Metro's monthly Board Packets",
     url: "https://www.ometro.com/board-of-directors/#board-agendas",
     note: "Approximate route-level trips estimated from bar heights on the monthly Ridership by Route charts; values rounded to the nearest 100.",
-    asOf: "2026-07",
-    dataThrough: "July 2026",
+    asOf: "2026-09",
+    dataThrough: "September 2026",
     // Retained as provenance for anyone reading the data file directly. The
     // footer no longer renders it: the list grew a packet every month and
     // crowded out the caveat that actually matters, which is that these are
     // estimates. The per-month sources are also in this script's header.
-    pages: "June packet PDF pages 101-103 (Jan-May), July packet PDF page 31 (Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug)",
+    pages: "June packet PDF pages 101-103 (Jan-May), July packet PDF page 31 (Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug), October packet PDF page 112 (Sep)",
     method: "Bar-height estimate calibrated to each chart axis and scaled to monthly system totals.",
   },
   routes: ROUTES.map((route) => ({ ...route, estimated: true })),
