@@ -156,7 +156,7 @@ export class RouteMap extends LitElement {
     const selected = this._selectedRoutes();
     if (!selected.length || (selected.length === 1 && this.selectedIds[0] === "system"))
       return "Showing the service area map with no route selected.";
-    return `Showing ${selected.map((r) => r.name).join(", ")}.`;
+    return `Showing ${selected.map((r) => this._nameFor(r)).join(", ")}.`;
   }
 
   // The dashboard's route chips and this map must agree on colour, but the
@@ -171,6 +171,13 @@ export class RouteMap extends LitElement {
   _colorFor(geoRoute) {
     const catalogue = this.routes.find((r) => r.id === geoRoute.id);
     return catalogue?.color || geoRoute.displayColor || geoRoute.color;
+  }
+
+  // Same reasoning as _colorFor: the chips say "Route 18", while GTFS names
+  // the route by street ("72nd / Ames Avenue"). Use the chip's name so the
+  // legend matches what was clicked.
+  _nameFor(geoRoute) {
+    return this.routes.find((r) => r.id === geoRoute.id)?.name || geoRoute.name;
   }
 
   // Parses a "d" string of the form build-routes.mjs emits — its
@@ -724,7 +731,7 @@ export class RouteMap extends LitElement {
           ${selected.map((route) => html`
             <span class="legend-item" role="listitem">
               <span class="sw" style="background:${this._colorFor(route)}"></span>
-              ${route.name}
+              ${this._nameFor(route)}
             </span>
           `)}
         </span>
