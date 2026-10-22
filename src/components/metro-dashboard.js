@@ -36,6 +36,7 @@ export class MetroDashboard extends LitElement {
       routeIds: [],
       fromYear: null,
       toYear: null,
+      compare: ["", ""],     // period keys pinned for comparison
     };
   }
 
@@ -95,6 +96,12 @@ export class MetroDashboard extends LitElement {
     if (next.fromYear > next.toYear) {
       if ("fromYear" in patch) next.toYear = next.fromYear;
       else next.fromYear = next.toYear;
+    }
+    // Drop compared periods that the new view no longer contains (granularity,
+    // year range or route changes all reshape the period list).
+    if (this._data && next.compare?.some(Boolean)) {
+      const keys = new Set(aggregate(this._data, next).periods.map((p) => p.key));
+      next.compare = next.compare.map((k) => (keys.has(k) ? k : ""));
     }
     this._state = next;
     this._announcement = this._announcementText(next);
@@ -255,6 +262,8 @@ export class MetroDashboard extends LitElement {
               .series=${agg.series}
               chartType=${this._state.chartType}
               .stacked=${this._state.stacked}
+              .compare=${this._state.compare}
+              @compare-change=${(e) => (this._state = { ...this._state, compare: e.detail.compare })}
               granularity=${this._state.granularity}
               accessibleLabel=${`${this._chartTitle()}. ${this._chartMeta(agg)}. Exact values are available in the Table display.`}>
             </ridership-chart>

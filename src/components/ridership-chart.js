@@ -13,6 +13,9 @@ import { fmtInt, fmtCompact } from "../data-store.js";
 //   stacked    boolean        (only affects bar mode w/ >1 series)
 //   granularity "day"|"month"|"year"
 //   accessibleLabel string    (direct label avoids cross-shadow ARIA references)
+//   compare    [keyA, keyB]   period keys pinned for comparison ("" = unset)
+// Click a bar to pin it (two max); click again or use Clear to unpin.
+// Emits `compare-change` ({ detail: { compare } }); the parent owns the state.
 // ------------------------------------------------------------------
 export class RidershipChart extends LitElement {
   static properties = {
@@ -22,6 +25,7 @@ export class RidershipChart extends LitElement {
     stacked: { type: Boolean },
     granularity: { type: String },
     accessibleLabel: { type: String },
+    compare: { attribute: false },
     _w: { state: true },
     _hover: { state: true },
   };
@@ -34,6 +38,7 @@ export class RidershipChart extends LitElement {
     this.stacked = false;
     this.granularity = "month";
     this.accessibleLabel = "Passenger trips chart";
+    this.compare = ["", ""];
     this._w = 800;
     this._hover = -1;
     this._ro = new ResizeObserver((entries) => {
@@ -100,13 +105,33 @@ export class RidershipChart extends LitElement {
   _y(value, niceMax) { return this._M.top + this._innerH * (1 - value / niceMax); }
   _xBandStart(i) { return this._M.left + i * this._band; }
 
+  // Index of each compared period in `periods`, or -1 when unset/out of range.
+  get _cmpIdx() {
+    return (this.compare || []).map((key) => (key ? this.periods.findIndex((p) => p.key === key) : -1));
+  }
+  _toggleCompare(i) {
+    const key = this.periods[i]?.key;
+    if (!key) return;
+    const next = [...(this.compare || []), "", ""].slice(0, 2);
+    const at = next.indexOf(key);
+    if (at >= 0) next[at] = "";
+    else if (!next[0]) next[0] = key;
+    else next[1] = key;          // both taken: replace B
+    this.dispatchEvent(new CustomEvent("compare-change", { detail: { compare: next }, bubbles: true, composed: true }));
+  }
+  _isCompared(i) { return this._cmpIdx.includes(i); }
+  _anyCompared() { return this._cmpIdx.some((i) => i >= 0); }
+
   // --- render ----------------------------------------------------
   render() {
     return html`
+      ${this._anyCompared() ? this._renderCompareCard() : nothing}
       <div class="plot" @mouseleave=${() => (this._hover = -1)}>
         ${this.periods.length === 0 ? this._renderEmpty() : this._renderSvg()}
         ${this._hover >= 0 && this.periods.length ? this._renderTooltip() : nothing}
       </div>
+      ${this.periods.length > 1 && !this._anyCompared()
+        ? html`<p class="cmp-tip">Click a bar to pin it, then another to compare two periods.</p>` : nothing}
     `;
   }
 
@@ -162,7 +187,7 @@ export class RidershipChart extends LitElement {
 
     return svg`${this.periods.map((p, i) => {
       const bandStart = this._xBandStart(i);
-      const dim = this._hover >= 0 && this._hover !== i;
+      const dim = (this._hover >= 0 || this._anyCompared()) && this._hover !== i && !this._isCompared(i);
       if (grouped) {
         const gw = bw / n;
         return svg`<g class=${dim ? "dim" : ""}>${this.series.map((ser, s) => {
@@ -200,7 +225,7 @@ export class RidershipChart extends LitElement {
         <path class="line-outline" d=${d} fill="none"></path>
         <path class="line" d=${d} stroke=${ser.color} fill="none"></path>
         ${pts.map((p, i) => svg`<circle class="dot ${this._hover === i ? "on" : ""}"
-            cx=${p[0]} cy=${p[1]} r=${this._hover === i ? 4.5 : 0} fill=${ser.color}></circle>`)}
+            cx=${p[0]} cy=${p[1]} r=${this._hover === i || this._isCompared(i) ? 4.5 : 0} fill=${ser.color}></circle>`)}
       `;
     })}`;
   }
@@ -210,10 +235,16 @@ export class RidershipChart extends LitElement {
     return svg`${this.periods.map((p, i) => {
       const x = this._xBandStart(i);
       const active = this._hover === i;
+      const slot = this._cmpIdx.indexOf(i);
       return svg`
+        ${slot >= 0 ? svg`<rect class="band-cmp slot${slot}" x=${x} y=${this._M.top}
+            width=${this._band} height=${this._innerH}></rect>
+          <g class="pill slot${slot}" transform="translate(${x + this._band / 2} ${this._M.top - 4})">
+            <circle r="9"></circle><text y="4" text-anchor="middle">${slot ? "B" : "A"}</text></g>` : nothing}
         ${active ? svg`<rect class="band-hi" x=${x} y=${this._M.top}
             width=${this._band} height=${this._innerH}></rect>` : nothing}
         <rect class="band-hit" x=${x} y=${this._M.top} width=${this._band} height=${this._innerH}
+          @click=${() => this._toggleCompare(i)}
           @mouseenter=${() => (this._hover = i)}
           @mousemove=${() => { if (this._hover !== i) this._hover = i; }}></rect>`;
     })}`;
@@ -245,6 +276,45 @@ export class RidershipChart extends LitElement {
           : svg`<text class="xtick" x=${cx} y=${y} text-anchor="middle">${p.short}</text>`;
       })}
     `;
+  }
+
+  // Side-by-side card for the compared periods. Totals sum every selected
+  // series, matching the tooltip's Total row. The change is later vs earlier,
+  // whichever slot each was picked in.
+  _renderCompareCard() {
+    const cells = this._cmpIdx.map((i, slot) => {
+      if (i < 0) return null;
+      const estimated = this.series.some((ser) => ser.estimated || ser.points[i]?.estimated);
+      const value = this.series.reduce((sum, ser) => sum + (ser.points[i]?.value || 0), 0);
+      return { slot, i, long: this.periods[i].long, value, estimated };
+    }).filter(Boolean);
+    let delta = nothing;
+    if (cells.length === 2) {
+      const [from, to] = [...cells].sort((a, b) => a.i - b.i);
+      const diff = to.value - from.value;
+      const pct = from.value ? (diff / from.value) * 100 : null;
+      const sign = diff > 0 ? "+" : diff < 0 ? "−" : "";
+      const approx = from.estimated || to.estimated ? "~" : "";
+      delta = html`
+        <div class="cmp-delta">
+          <span class="cmp-delta-val u-num">${sign}${approx}${fmtInt(Math.abs(diff))}${pct === null ? "" : html` <span class="cmp-pct">(${sign}${Math.abs(pct).toFixed(1)}%)</span>`}</span>
+          <span class="cmp-delta-sub">${to.long} vs ${from.long}</span>
+        </div>`;
+    }
+    return html`
+      <div class="cmp" role="group" aria-label="Period comparison" aria-live="polite">
+        ${cells.map((c) => html`
+          <div class="cmp-cell">
+            <span class="cmp-pill slot${c.slot}" aria-hidden="true">${c.slot ? "B" : "A"}</span>
+            <div>
+              <div class="cmp-period">${c.long}</div>
+              <div class="cmp-val u-num">${this._value(c.value, c.estimated)}</div>
+            </div>
+          </div>`)}
+        ${delta}
+        <button class="cmp-clear" @click=${() => this.dispatchEvent(new CustomEvent("compare-change", { detail: { compare: ["", ""] }, bubbles: true, composed: true }))}>Clear</button>
+        ${cells.length === 1 ? html`<div class="cmp-hint">Pick a second period to compare.</div>` : nothing}
+      </div>`;
   }
 
   _renderTooltip() {
@@ -310,6 +380,41 @@ export class RidershipChart extends LitElement {
     .line { stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
     .dot { stroke: var(--ink, #053955); stroke-width: 1.5; transition: r .1s ease; }
     g.dim { opacity: .32; transition: opacity .12s ease; }
+
+    .band-cmp.slot0 { fill: rgba(0,125,186,.10); stroke: #007DBA; stroke-width: 1.5; }
+    .band-cmp.slot1 { fill: rgba(242,169,0,.14); stroke: #F2A900; stroke-width: 1.5; }
+    .pill.slot0 circle { fill: #007DBA; }
+    .pill.slot1 circle { fill: #F2A900; }
+    .pill text { font-family: var(--font-display, sans-serif); font-weight: 700; font-size: 11px; fill: #fff; }
+    .pill.slot1 text { fill: var(--ink, #053955); }
+
+    /* Comparison card */
+    .cmp {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px;
+      padding: 12px 16px; margin-bottom: 14px;
+      background: #f4f7f9; border: 1px solid var(--line, #dfe4e8); border-radius: 12px;
+    }
+    .cmp-cell { display: flex; align-items: center; gap: 10px; }
+    .cmp-pill {
+      display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+      font-family: var(--font-display, sans-serif); font-weight: 700; font-size: 12px; color: #fff;
+    }
+    .cmp-pill.slot0 { background: #007DBA; }
+    .cmp-pill.slot1 { background: #F2A900; color: var(--ink, #053955); }
+    .cmp-period { font-size: 12px; color: var(--muted, #5b6b75); font-weight: 700; }
+    .cmp-val { font-family: var(--font-display, sans-serif); font-weight: 700; font-size: 20px; color: var(--ink, #053955); }
+    .cmp-delta { margin-left: auto; text-align: right; }
+    .cmp-delta-val { font-family: var(--font-display, sans-serif); font-weight: 700; font-size: 20px; color: var(--ink, #053955); }
+    .cmp-pct { font-size: 15px; }
+    .cmp-delta-sub { display: block; font-size: 12px; color: var(--muted, #5b6b75); }
+    .cmp-clear {
+      appearance: none; border: 0; background: transparent; cursor: pointer;
+      font-family: var(--font-body, sans-serif); font-weight: 700; font-size: 13.5px;
+      color: var(--metro-blue, #007DBA); text-decoration: underline; padding: 4px;
+    }
+    .cmp-clear:focus-visible { outline: 3px solid var(--metro-blue, #007DBA); outline-offset: 2px; }
+    .cmp-tip { margin: 6px 0 0; font-size: 13px; color: var(--muted-2, #8a97a0); text-align: center; }
+    .cmp-hint { font-size: 13px; color: var(--muted, #5b6b75); }
 
     .band-hit { fill: transparent; cursor: pointer; }
     .band-hi { fill: rgba(0,125,186,.06); }
