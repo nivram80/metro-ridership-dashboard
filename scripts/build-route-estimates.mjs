@@ -5,9 +5,12 @@
 //          months 6-7 from the July 2026 and August 2026 Board Packets,
 //            PDF page 31 and page 116;
 //          month 8 from the September 2026 Board Packet, PDF page 31;
-//          month 9 from the October 2026 Board Packet, PDF page 112.
-// All eight months were measured with the same pass, so the series has no
-// methodological seam.
+//          month 9 from the October 2026 Board Packet, PDF page 112;
+//          month 10 from the November 2026 Board Packet, PDF page 76.
+// Months 1-9 were measured with the same raster pass. Month 10's chart is
+// vector, so its bar heights were read exactly from the PDF geometry
+// (pdftocairo -svg) against the gridlines; the raw total was within 0.01% of
+// the official figure, so the seam is negligible.
 //
 // Months 1-5 were re-measured because the original pass read several small
 // bars as zero - routes 92, 93, 95 and 120 had zero-trip months, which is not
@@ -102,6 +105,7 @@ const OFFICIAL_TOTALS = {
   7: 287348,
   8: 304748,
   9: 319533,
+  10: 352539,
 };
 
 // Estimated monthly passenger trips by route and service-day category.
@@ -358,6 +362,34 @@ const ESTIMATES = {
     "120": { weekday: 300, saturday: 0, sunday: 0 },
     "200": { weekday: 400, saturday: 0, sunday: 0 },
   },
+  10: {
+    orbt: { weekday: 53000, saturday: 7600, sunday: 4300 },
+    "3": { weekday: 18000, saturday: 2000, sunday: 1400 },
+    "4": { weekday: 32500, saturday: 4000, sunday: 1900 },
+    "5": { weekday: 8300, saturday: 700, sunday: 0 },
+    "8": { weekday: 4100, saturday: 600, sunday: 0 },
+    "11": { weekday: 8800, saturday: 1500, sunday: 800 },
+    "13": { weekday: 14600, saturday: 2000, sunday: 1300 },
+    "14": { weekday: 7900, saturday: 900, sunday: 0 },
+    "15": { weekday: 9900, saturday: 1700, sunday: 1300 },
+    "18": { weekday: 53600, saturday: 8300, sunday: 3900 },
+    "24": { weekday: 29400, saturday: 3500, sunday: 2200 },
+    "26": { weekday: 6200, saturday: 400, sunday: 300 },
+    "30": { weekday: 14300, saturday: 2700, sunday: 1400 },
+    "35": { weekday: 7000, saturday: 600, sunday: 400 },
+    "36": { weekday: 2600, saturday: 300, sunday: 100 },
+    "41": { weekday: 6900, saturday: 0, sunday: 0 },
+    "43": { weekday: 6700, saturday: 1400, sunday: 0 },
+    "55": { weekday: 4600, saturday: 500, sunday: 0 },
+    "92": { weekday: 500, saturday: 0, sunday: 0 },
+    "93": { weekday: 300, saturday: 0, sunday: 0 },
+    "94": { weekday: 600, saturday: 0, sunday: 0 },
+    "95": { weekday: 300, saturday: 0, sunday: 0 },
+    "97": { weekday: 800, saturday: 0, sunday: 0 },
+    "106": { weekday: 2900, saturday: 0, sunday: 0 },
+    "120": { weekday: 300, saturday: 0, sunday: 0 },
+    "200": { weekday: 500, saturday: 0, sunday: 0 },
+  },
 };
 
 const records = [];
@@ -394,13 +426,13 @@ const data = {
     name: "Metro's monthly Board Packets",
     url: "https://www.ometro.com/board-of-directors/#board-agendas",
     note: "Approximate route-level trips estimated from bar heights on the monthly Ridership by Route charts; values rounded to the nearest 100.",
-    asOf: "2026-09",
-    dataThrough: "September 2026",
+    asOf: "2026-10",
+    dataThrough: "October 2026",
     // Retained as provenance for anyone reading the data file directly. The
     // footer no longer renders it: the list grew a packet every month and
     // crowded out the caveat that actually matters, which is that these are
     // estimates. The per-month sources are also in this script's header.
-    pages: "June packet PDF pages 101-103 (Jan-May), July packet PDF page 31 (Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug), October packet PDF page 112 (Sep)",
+    pages: "June packet PDF pages 101-103 (Jan-May), July packet PDF page 31 (Jun), August packet PDF page 116 (Jul), September packet PDF page 31 (Aug), October packet PDF page 112 (Sep), November packet PDF page 76 (Oct)",
     method: "Bar-height estimate calibrated to each chart axis and scaled to monthly system totals.",
   },
   routes: ROUTES.map((route) => ({ ...route, estimated: true })),
